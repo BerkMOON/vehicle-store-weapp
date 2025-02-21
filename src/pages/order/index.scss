@@ -1,0 +1,98 @@
+.index-container {
+  height: 100vh;
+  background: #f5f5f5;
+
+  .fixed-tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: #fff;
+
+    .nut-tabs-content {
+      height: calc(100vh - 94px); // 减去tabs头部(44px)和底部tabbar(50px)的高度
+      padding-bottom: constant(safe-area-inset-bottom);
+      padding-bottom: env(safe-area-inset-bottom);
+
+
+      ::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+        color: transparent;
+      }
+    }
+  }
+
+  .order-list {
+    .work-order-item {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+
+      .order-header {
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eee;
+
+        .order-number {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+        }
+      }
+
+      .order-content {
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+
+        .content-row {
+          display: flex;
+          margin-bottom: 8px;
+          font-size: 14px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          .label {
+            color: #666;
+            width: 80px;
+            flex-shrink: 0;
+          }
+
+          .value {
+            color: #333;
+            flex: 1;
+          }
+        }
+      }
+
+      .order-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 12px;
+
+        .btn {
+          padding: 6px 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+          color: #666;
+
+          &.primary {
+            background: #4e54c8;
+            color: #fff;
+            border-color: #4e54c8;
+          }
+        }
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

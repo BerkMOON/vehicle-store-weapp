@@ -1,0 +1,30 @@
+.role-select {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+
+  .title {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 48px;
+  }
+
+  .role-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .role-btn {
+      height: 48px;
+      border-radius: 24px;
+      font-size: 16px;
+      background: #fff;
+      color: #4e54c8;
+    }
+  }
+}
