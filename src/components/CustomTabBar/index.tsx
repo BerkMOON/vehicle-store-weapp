@@ -1,8 +1,9 @@
 import Taro from '@tarojs/taro'
 import { Tabbar } from '@nutui/nutui-react-taro'
-import { Agenda, Board, User, Voucher } from '@nutui/icons-react-taro'
+import { Agenda, Board, Coupon, Find, User, Voucher } from '@nutui/icons-react-taro'
 import { useState, useEffect } from 'react'
 import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
+import { Role } from '@/common/constants/constants'
 
 const afterSaleTabList = [
   {
@@ -13,7 +14,7 @@ const afterSaleTabList = [
   {
     pagePath: '/pages/coupon-apportion/index',
     text: '优惠券发放',
-    icon:  <Voucher size={18} />
+    icon:  <Coupon size={18} />
   },
   {
     pagePath: '/pages/mine/index',
@@ -30,10 +31,9 @@ const shopManagerTabList = [
     selectedIconPath: '/assets/images/analysis-active.png'
   },
   {
-    pagePath: '/pages/coupon-audit/index',
+    pagePath: '/pages/coupon-review/index',
     text: '优惠券审核',
-    iconPath: '/assets/images/audit.png',
-    selectedIconPath: '/assets/images/audit-active.png'
+    icon: <Find size={18} />
   },
   {
     pagePath: '/pages/balance-clues/index',
@@ -44,7 +44,20 @@ const shopManagerTabList = [
   {
     pagePath: '/pages/mine/index',
     text: '我的',
-    iconPath: '/assets/images/balance.png',
+    icon: <User size={18} />
+  }
+]
+
+const financeTabList = [
+  {
+    pagePath: '/pages/finance/index',
+    text: '优惠券结算',
+    icon:  <Coupon size={18} />
+  },
+  {
+    pagePath: '/pages/mine/index',
+    text: '我的',
+    icon: <User size={18} />
   }
 ]
 
@@ -57,12 +70,13 @@ function CustomTabBar() {
 
   useEffect(() => {
     const role = Taro.getStorageSync('userRole')
-    const tabList = role === 'afterSale' ? afterSaleTabList : shopManagerTabList
+    const tabList = role === Role.AfterSale ? afterSaleTabList : role === Role.ShopManager ? shopManagerTabList : financeTabList
     setTabList(tabList)
     if(!tabInfo) {
       setTabInfo(tabList[0])
     }
   }, [])
+  
 
   const switchTab = (tabInfo: TabInfo) => {
     setTabInfo(tabInfo)

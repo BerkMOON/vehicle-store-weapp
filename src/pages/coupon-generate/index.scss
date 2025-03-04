@@ -1,0 +1,118 @@
+.coupon-generate {
+  padding: 16px;
+  min-height: calc(100vh - 24px);
+  background-color: #f5f5f5;
+  --nutui-color-primary: red;
+
+  .coupon-list {
+    margin-bottom: 16px;
+  }
+
+  .input-with-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .form-input {
+      flex: 1;
+    }
+
+    .action-button {
+      padding: 0 12px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .coupon-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .coupon-type {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .coupon-amount {
+      color: #f60;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .coupon-info {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .coupon-validity {
+      color: #999;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  .delete-btn {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    color: #ff4d4f;
+  }
+
+  .submit-button {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 16px 24px 16px;
+    background: #fff;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .save-button {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+
+    .nut-button {
+      min-width: 80px;
+    }
+  }
+
+  .add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    cursor: pointer;
+    border: 2px dashed #ddd;
+    background: #fafafa;
+    box-shadow: none;
+
+    .add-icon {
+      font-size: 32px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .add-text {
+      color: #999;
+      font-size: 14px;
+    }
+
+    &:active {
+      background: #f0f0f0;
+    }
+  }
+}

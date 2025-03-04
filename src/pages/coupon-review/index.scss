@@ -1,0 +1,73 @@
+.coupon-review {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: scroll;
+  background: #f5f6f7;
+
+  .nut-tabs__titles {
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .coupon-item {
+    margin: 12px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    .cell-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .batch-no {
+        font-size: 15px;
+        color: #333;
+        font-weight: 500;
+      }
+    }
+
+    .coupon-info {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #666;
+
+      .count-tag {
+        color: #1890ff;
+        font-size: 12px;
+      }
+
+      .creator {
+        margin-bottom: 4px;
+      }
+
+      .remark {
+        color: #999;
+      }
+    }
+
+    .nut-cell {
+      padding: 16px;
+      background: transparent;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .review-button {
+      min-width: 64px;
+      height: 32px;
+      border-radius: 16px;
+      font-size: 13px;
+    }
+  }
+
+  .nut-empty {
+    padding: 60px 0;
+    background: #fff;
+  }
+}

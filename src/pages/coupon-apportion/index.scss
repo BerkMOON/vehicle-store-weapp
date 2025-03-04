@@ -1,0 +1,133 @@
+.coupon-apportion {
+  box-sizing: border-box;
+  min-height: 100%;
+  overflow: scroll;
+  background: #f5f6f7;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #fff;
+    margin-bottom: 12px;
+
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .nut-button {
+      border-radius: 20px;
+      padding: 8px 16px;
+    }
+  }
+
+  .content {
+    background: #fff;
+
+    .nut-tabs {
+      .nut-tabs__titles {
+        padding: 0 16px;
+        background: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+    }
+  }
+
+  .coupon-item {
+    margin-bottom: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    .cell-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .batch-no {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+
+    .coupon-info {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+
+      .count-tag {
+        color: #1890ff;
+        font-size: 12px;
+      }
+    }
+
+    .arrow {
+      font-size: 20px;
+      color: #999;
+      transform: rotate(90deg);
+      transition: transform 0.3s;
+
+      &.expanded {
+        transform: rotate(270deg);
+      }
+    }
+  }
+
+  .coupon-details {
+    padding: 16px;
+    background: #f9f9f9;
+
+    .detail-item {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+
+      .detail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .detail-type {
+          font-weight: bold;
+          color: #333;
+        }
+
+        .detail-value {
+          &.cash {
+            color: #ff4d4f;
+            font-size: 16px;
+            font-weight: bold;
+          }
+        }
+      }
+
+      .detail-rule {
+        font-size: 12px;
+        color: #999;
+        padding: 4px 0;
+      }
+
+      .detail-validity {
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      &:first-child {
+        margin-top: 0;
+      }
+    } 
+  }
+
+  .nut-empty {
+    padding: 40px 0;
+  }
+}

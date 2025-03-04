@@ -7,7 +7,10 @@ export default defineAppConfig({
     'pages/order-detail/index',
     'pages/order-search/index',
     'pages/coupon-generate/index',
-    'pages/coupon-apportion/index'
+    'pages/coupon-apportion/index',
+    'pages/coupon-review/index',
+    'pages/coupon-review/detail/index',
+    'pages/finance/index',
   ],
   tabBar: {
     custom: true,
@@ -23,6 +26,14 @@ export default defineAppConfig({
       {
         pagePath: 'pages/mine/index',
         text: '我的',
+      },
+      {
+        pagePath: 'pages/coupon-review/index',
+        text: '优惠券审核'
+      },
+      {
+        pagePath: 'pages/finance/index',
+        text: '优惠券结算'
       }
     ]
   },

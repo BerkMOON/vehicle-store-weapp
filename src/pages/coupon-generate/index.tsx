@@ -1,123 +1,381 @@
 import { View } from '@tarojs/components'
-import { Form, Input, Cell, Button, TextArea } from '@nutui/nutui-react-taro'
-import { useState } from 'react'
-import './index.less'
+import { Form, Input, TextArea, Radio, InputNumber, DatePicker, Button } from '@nutui/nutui-react-taro'
+import './index.scss'
 import Taro from '@tarojs/taro'
-import GeneralPage from '@/components/GeneralPage'
-
-interface CouponForm {
-  name: string
-  amount: string
-  validDays: string
-  description: string
-  quantity: string
-}
+import { Scan } from '@nutui/icons-react-taro'
+import { useState } from 'react'
+import { COUPON_TYPES, CouponType, SuccessCode } from '@/common/constants/constants'
+import { CouponAPI } from '@/request/couponApi'
 
 export default function CouponGenerate() {
-  const [form, setForm] = useState<CouponForm>({
-    name: '',
-    amount: '',
-    validDays: '',
-    description: '',
-    quantity: ''
-  })
-  const [loading, setLoading] = useState(false)
+  const [form] = Form.useForm()
+  const [formAll] = Form.useForm()
+  const [currentPicker, setCurrentPicker] = useState<'start' | 'end' | null>(null)
+  const validStart = Form.useWatch('validStart', form)
+  const validEnd = Form.useWatch('validEnd', form)
+  const type = Form.useWatch('type', form)
+  const [isAdding, setIsAdding] = useState(false)
+  const [coupons, setCoupons] = useState<any[]>([])
 
-  const handleSubmit = async () => {
-    if (!form.name || !form.amount || !form.validDays || !form.quantity) {
+  // 添加日期格式化函数
+  const formatDate = (date) => {
+    if (!date || !Array.isArray(date)) return ''
+    const [year, month, day, hour = 0, minute = 0] = date
+    const d = new Date(year, month - 1, day, hour, minute, 0)
+    return d.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).replace(/\//g, '-')
+  }
+
+  const handleScan = async () => {
+    try {
+      const res = await Taro.scanCode({
+        onlyFromCamera: false,
+        scanType: ['qrCode']
+      })
+
+      if (res.result) {
+        console.log('扫描结果：', res.result)
+        formAll.setFieldsValue({
+          openId: res.result
+        })
+      } else {
+        Taro.showToast({
+          title: '未获取到用户信息',
+          icon: 'none'
+        })
+      }
+    } catch (error) {
+      console.error('扫码失败：', error)
       Taro.showToast({
-        title: '请填写完整信息'
+        title: '扫码失败',
+        icon: 'error'
+      })
+    }
+  }
+
+  const handleDateConfirm = (_, values) => {
+    console.log('日期确认：', values)
+    if (currentPicker === 'start') {
+      form.setFieldsValue({ validStart: values })
+      form.validateFields(['validStart'])
+    } else if (currentPicker === 'end') {
+      form.setFieldsValue({ validEnd: values })
+      form.validateFields(['validEnd'])
+    }
+    setCurrentPicker(null)
+  }
+
+  const handleSaveCoupon = async (values) => {
+    const { cash, quantity, validStart, validEnd, type } = values
+
+    // 验证金额
+    if (type === CouponType.Cash) {
+      const amountNum = parseFloat(cash)
+      if (isNaN(amountNum) || amountNum <= 0) {
+        Taro.showToast({
+          title: '请输入有效的优惠金额',
+          icon: 'none'
+        })
+        return
+      }
+    }
+
+    // 验证日期
+    const start = new Date(validStart)
+    const end = new Date(validEnd)
+    if (end <= start) {
+      Taro.showToast({
+        title: '结束日期必须大于开始日期',
+        icon: 'none'
       })
       return
     }
 
-    setLoading(true)
-    try {
-      // 这里替换为实际的API调用
-      await fetch('/api/coupons/generate', {
-        method: 'POST',
-        body: JSON.stringify(form)
-      })
+    // 验证数量
+    const quantityNum = parseInt(quantity)
+    if (isNaN(quantityNum) || quantityNum <= 0 || quantityNum > 100) {
       Taro.showToast({
-        title: '生成成功'
+        title: '生成数量应在1-100张之间',
+        icon: 'none'
       })
-      setForm({
-        name: '',
-        amount: '',
-        validDays: '',
-        description: '',
-        quantity: ''
+      return
+    }
+
+    // 保存优惠券到列表
+    // 修改保存优惠券的处理
+    setCoupons([...coupons, {
+      ...values,
+      cash: parseFloat(cash),
+      validStart: formatDate(validStart),
+      validEnd: formatDate(validEnd),
+    }])
+
+    setIsAdding(false)
+    form.resetFields()
+  }
+
+  const handleGenerateCoupons = async () => {
+    if (coupons.length === 0) {
+      Taro.showToast({
+        title: '请至少添加一张优惠券',
+        icon: 'none'
       })
+      return
+    }
+
+    try {
+      const openId = formAll.getFieldValue('openId')
+
+      const expandedCoupons = coupons.reduce((acc, coupon) => {
+        const { quantity, ...couponData } = coupon
+        return [
+          ...acc,
+          ...Array(quantity).fill(couponData)
+        ]
+      }, [])
+
+      const res = await CouponAPI.createCoupon({
+        openId,
+        couponList: expandedCoupons
+      })
+
+      if (res?.response_status.code === SuccessCode) {
+        setTimeout(() => {
+          Taro.navigateBack()
+        }, 1500)
+        Taro.showToast({
+          title: '生成成功',
+          icon: 'success'
+        })
+        setCoupons([])
+      } else {
+        Taro.showToast({
+          title: '生成失败',
+          icon: 'error'
+        })
+      }
     } catch (error) {
       Taro.showToast({
-        title: '生成失败'
+        title: '生成失败',
+        icon: 'error'
       })
       console.error(error)
-    } finally {
-      setLoading(false)
     }
+  }
+
+  const handleDeleteCoupon = (index: number) => {
+    setCoupons(coupons.filter((_, i) => i !== index))
   }
 
   return (
     <View className='coupon-generate'>
-      <Form>
-        <Cell.Group title='优惠券信息'>
-          <Form.Item label='优惠券名称' required>
-            <Input
-              placeholder='请输入优惠券名称'
-              value={form.name}
-              onChange={(val) => setForm(prev => ({ ...prev, name: val }))}
-            />
-          </Form.Item>
+      {!isAdding && (
+        <>
+          <Form form={formAll} labelPosition='left'>
+            <View className="input-with-actions">
+              <Form.Item
+                label='用户'
+                name='openId'
+                rules={[{ required: true, message: '请扫描用户二维码' }]}
+              >
+                <Input
+                  className="form-input"
+                  placeholder="请扫描用户二维码"
+                  type="text"
+                />
+              </Form.Item>
+              <Scan onClick={handleScan} />
+            </View>
+          </Form>
+          <Form labelPosition='top'>
+            <Form.Item
+              label='优惠券信息'
+              rules={[{ required: true }]}
+              className='coupon-info-item'
+            >
+              <View className="coupon-list">
+                {coupons.map((coupon, index) => (
+                  <View key={index} className="coupon-card">
+                    <View className="coupon-type">{COUPON_TYPES.find(t => t.value === coupon.type)?.label}</View>
+                    {coupon.type === CouponType.Cash ? (
+                      <View className="coupon-amount">{coupon.cash}元</View>
+                    ) : coupon.type === CouponType.Maintenance ? (
+                      <View className="coupon-info">{coupon.maintenance}</View>
+                    ) : coupon.type === CouponType.Insurance ? (
+                      <View className="coupon-info">{coupon.insurance}</View>
+                    ) : (
+                      <View className="coupon-info">{coupon.physical}</View>
+                    )}
+                    <View className="coupon-validity">
+                      <View>有效期：{coupon.validStart} 至 {coupon.validEnd}</View>
+                      <View>数量：{coupon.quantity}张</View>
+                    </View>
+                    <View className="delete-btn" onClick={() => handleDeleteCoupon(index)}>删除</View>
+                  </View>
+                ))}
+                <View className="coupon-card add-card" onClick={() => setIsAdding(true)}>
+                  <View className="add-icon">+</View>
+                  <View className="add-text">新增优惠券</View>
+                </View>
+              </View>
+            </Form.Item>
+          </Form>
+          <View className='submit-button'>
+            <Button block color="#4e54c8" onClick={handleGenerateCoupons}>生成优惠券</Button>
+          </View>
+        </>
+      )}
+      {isAdding && <Form
+        form={form}
+        onFinish={handleSaveCoupon}
+        initialValues={{
+          quantity: 1
+        }}
+        divider
+        labelPosition="left"
+        footer={
+          <View className='save-button'>
+            <Button onClick={() => setIsAdding(false)}>取消</Button>
+            <Button nativeType="submit" color='#4e54c8'>
+              保存
+            </Button>
+          </View>
+        }>
+        <Form.Item
+          label='优惠券类型'
+          name='type'
+          rules={[{ required: true, message: '请选择优惠券类型' }]}
+        >
+          <Radio.Group direction="horizontal">
+            {COUPON_TYPES.map(type => (
+              <Radio key={type.value} value={type.value}>
+                {type.label}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
 
-          <Form.Item label='优惠金额' required>
+        {
+          type === CouponType.Cash && <Form.Item
+            label='优惠金额'
+            name='cash'
+            rules={[{ required: true, message: '请输入优惠金额' }]}
+          >
             <Input
               placeholder='请输入优惠金额'
               type='digit'
-              value={form.amount}
-              onChange={(val) => setForm(prev => ({ ...prev, amount: val }))}
             />
           </Form.Item>
+        }
 
-          <Form.Item label='有效天数' required>
-            <Input
-              placeholder='请输入有效天数'
-              type='number'
-              value={form.validDays}
-              onChange={(val) => setForm(prev => ({ ...prev, validDays: val }))}
-            />
-          </Form.Item>
-
-          <Form.Item label='生成数量' required>
-            <Input
-              placeholder='请输入生成数量'
-              type='number'
-              value={form.quantity}
-              onChange={(val) => setForm(prev => ({ ...prev, quantity: val }))}
-            />
-          </Form.Item>
-
-          <Form.Item label='使用说明'>
+        {
+          type === CouponType.Maintenance && <Form.Item
+            label='保养信息'
+            name='maintenance'
+            rules={[{ required: true, message: '请输入保养信息' }]}
+          >
             <TextArea
-              placeholder='请输入使用说明'
+              placeholder='请输入保养信息'
+              showCount
               maxLength={100}
-              value={form.description}
-              onChange={(val) => setForm(prev => ({ ...prev, description: val }))}
             />
           </Form.Item>
-        </Cell.Group>
-      </Form>
+        }
 
-      <View className='submit-button'>
-        <Button
-          block
-          type='primary'
-          loading={loading}
-          onClick={handleSubmit}
+        {
+          type === CouponType.Insurance && <Form.Item
+            label='续保信息'
+            name='maintenance'
+            rules={[{ required: true, message: '请输入续保信息' }]}
+          >
+            <TextArea
+              placeholder='请输入续保信息'
+              showCount
+              maxLength={100}
+            />
+          </Form.Item>
+        }
+
+        {
+          type === CouponType.Physical && <Form.Item
+            label='实物信息'
+            name='physical'
+            rules={[{ required: true, message: '请输入实物信息' }]}
+          >
+            <TextArea
+              placeholder='请输入实物信息'
+              showCount
+              maxLength={100}
+            />
+          </Form.Item>
+        }
+
+        <Form.Item
+          label='生成数量'
+          name='quantity'
+          rules={[{ required: true, message: '请输入生成数量' }]}
         >
-          生成优惠券
-        </Button>
-      </View>
+          <InputNumber
+            min={1}
+            max={100}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label='开始日期'
+          name='validStart'
+          rules={[{ required: true, message: '请选择开始日期' }]}
+        >
+          <View onClick={() => setCurrentPicker('start')}>
+            <Input
+              placeholder='请选择开始日期'
+              value={formatDate(validStart)}
+              disabled
+            />
+          </View>
+        </Form.Item>
+
+        <Form.Item
+          label='结束日期'
+          name='validEnd'
+          rules={[{ required: true, message: '请选择结束日期' }]}
+        >
+          <View onClick={() => setCurrentPicker('end')}>
+            <Input
+              placeholder='请选择结束日期'
+              value={formatDate(validEnd)}
+              disabled
+            />
+          </View>
+        </Form.Item>
+
+        <Form.Item
+          label='使用说明'
+          name='description'
+        >
+          <TextArea
+            placeholder='请输入使用说明'
+            showCount
+            maxLength={100}
+          />
+        </Form.Item>
+      </Form>}
+
+      <DatePicker
+        title={currentPicker === 'start' ? '开始日期' : '结束日期'}
+        type="datetime"
+        defaultValue={new Date()}
+        visible={!!currentPicker}
+        onClose={() => setCurrentPicker(null)}
+        onConfirm={handleDateConfirm}
+      />
     </View>
   )
 }

@@ -38,7 +38,8 @@ const config = {
       '@/utils': path.resolve(__dirname, '..', 'src/utils'),
       '@/api': path.resolve(__dirname, '..', 'src/api'),
       '@/common': path.resolve(__dirname, '..', 'src/common'),
-      '@/store': path.resolve(__dirname, '..' ,'src/store')
+      '@/store': path.resolve(__dirname, '..' ,'src/store'),
+      '@/request': path.resolve(__dirname, '..','src/request'),
     },
     postcss: {
       pxtransform: {

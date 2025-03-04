@@ -1,9 +1,14 @@
+import { Loading } from "@nutui/nutui-react-taro"
 import CustomTabBar from "../CustomTabBar"
+import "./index.scss"
 
 const GeneralPage = (props) => {
+  const { loading } = props
   return <>
-    {props.children}
-    <CustomTabBar/>
+    <view className="general-page">
+      {loading ? <Loading type="spinner" /> : props.children}
+    </view>
+    <CustomTabBar />
   </>
 }
 
