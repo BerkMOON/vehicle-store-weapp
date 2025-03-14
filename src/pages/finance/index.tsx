@@ -50,12 +50,14 @@ export default function Finance() {
 
       setLoading(true)
       // 获取优惠券信息
-      const res = await CouponAPI.getCouponList({
+      const res = await CouponAPI.getCouponInfo({
         id: Number(result)
       })
 
+      console.log(res)
+
       if (res?.data) {
-        setCouponInfo(res.data.list[0])
+        setCouponInfo(res.data)
       } else {
         Taro.showToast({
           title: '无效的优惠券',

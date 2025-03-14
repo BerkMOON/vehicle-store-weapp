@@ -114,71 +114,70 @@ export default function CouponReviewDetail() {
   }
 
   return (
-    <GeneralPage>
-      <View className='coupon-review-detail'>
-        <Skeleton rows={15} title animated visible={!loading}>
-          {
-            batchInfo && <View className='batch-info'>
-              <Cell.Group>
-                {
-                  batchInfo?.status !== CouponBatchStatus.AUDITING && <Cell title="审核结果" description={CouponStatusMap[batchInfo.status]} />
-                }
-                <Cell title='审核单号' description={batchInfo.batch_no} />
-                <Cell title='优惠券数量' description={batchInfo.coupon_count} />
-                <Cell title='创建人' description={batchInfo.creator} />
-                <Cell title='备注信息' description={batchInfo.remark || '-'} />
-              </Cell.Group>
-            </View>
-          }
 
-
-          <View className='coupon-list'>
-            <View className='section-title'>优惠券列表</View>
-            {couponList.map((coupon, index) => (
-              <View key={index} className='coupon-item'>
-                <View className='coupon-type'>
-                  {COUPON_TYPES.find(t => t.value === coupon.type)?.label}
-                </View>
-                <View className={coupon.type === CouponType.Cash ? 'amount' : 'desc'}>
-                  {getRuleContent(coupon)}
-                </View>
-                <View className='validity'>
-                  <View>开始时间：{coupon.valid_start}</View>
-                  <View>结束时间：{coupon.valid_end}</View>
-                </View>
-              </View>
-            ))}
+    <View className='coupon-review-detail'>
+      <Skeleton rows={15} title animated visible={!loading}>
+        {
+          batchInfo && <View className='batch-info'>
+            <Cell.Group>
+              {
+                batchInfo?.status !== CouponBatchStatus.AUDITING && <Cell title="审核结果" description={CouponStatusMap[batchInfo.status]} />
+              }
+              <Cell title='审核单号' description={batchInfo.batch_no} />
+              <Cell title='优惠券数量' description={batchInfo.coupon_count} />
+              <Cell title='创建人' description={batchInfo.creator} />
+              <Cell title='备注信息' description={batchInfo.remark || '-'} />
+            </Cell.Group>
           </View>
+        }
 
-          {
-            batchInfo?.status === CouponBatchStatus.AUDITING &&
-            <>
-              <View className='review-form'>
-                <View className='section-title'>审核操作</View>
-                <View className='reject-reason'>
-                  <TextArea
-                    value={rejectReason}
-                    onChange={(val) => setRejectReason(val)}
-                    maxLength={100}
-                    style={{ height: '90px' }}
-                    placeholder='请输入拒绝原因（拒绝时必填）'
-                    showCount
-                  />
-                </View>
-              </View>
 
-              <View className='button-group'>
-                <Button type='default' size='large' onClick={() => handleReview(3)}>
-                  拒绝
-                </Button>
-                <Button color='#4e54c8' size='large' onClick={() => handleReview(2)}>
-                  通过
-                </Button>
+        <View className='coupon-list'>
+          <View className='section-title'>优惠券列表</View>
+          {couponList.map((coupon, index) => (
+            <View key={index} className='coupon-item'>
+              <View className='coupon-type'>
+                {COUPON_TYPES.find(t => t.value === coupon.type)?.label}
               </View>
-            </>
-          }
-        </Skeleton>
-      </View>
-    </GeneralPage>
+              <View className={coupon.type === CouponType.Cash ? 'amount' : 'desc'}>
+                {getRuleContent(coupon)}
+              </View>
+              <View className='validity'>
+                <View>开始时间：{coupon.valid_start}</View>
+                <View>结束时间：{coupon.valid_end}</View>
+              </View>
+            </View>
+          ))}
+        </View>
+
+        {
+          batchInfo?.status === CouponBatchStatus.AUDITING &&
+          <>
+            <View className='review-form'>
+              <View className='section-title'>审核操作</View>
+              <View className='reject-reason'>
+                <TextArea
+                  value={rejectReason}
+                  onChange={(val) => setRejectReason(val)}
+                  maxLength={100}
+                  style={{ height: '90px' }}
+                  placeholder='请输入拒绝原因（拒绝时必填）'
+                  showCount
+                />
+              </View>
+            </View>
+
+            <View className='button-group'>
+              <Button type='default' size='large' onClick={() => handleReview(3)}>
+                拒绝
+              </Button>
+              <Button color='#4e54c8' size='large' onClick={() => handleReview(2)}>
+                通过
+              </Button>
+            </View>
+          </>
+        }
+      </Skeleton>
+    </View>
   )
 }

@@ -1,9 +1,9 @@
 export default defineAppConfig({
   pages: [
-    'pages/role-select/index',
+    'pages/home/index',
+    'pages/login/index',
     'pages/order/index',
     'pages/mine/index',
-    'pages/login/index',
     'pages/order-detail/index',
     'pages/order-search/index',
     'pages/coupon-generate/index',
@@ -11,6 +11,8 @@ export default defineAppConfig({
     'pages/coupon-review/index',
     'pages/coupon-review/detail/index',
     'pages/finance/index',
+    'pages/user-list/index',
+    'pages/user-list/create/index'
   ],
   tabBar: {
     custom: true,
@@ -18,6 +20,10 @@ export default defineAppConfig({
       {
         pagePath: 'pages/order/index',
         text: '首页',
+      },
+      {
+        pagePath: 'pages/user-list/index',
+        text: '员工列表'
       },
       {
         pagePath: 'pages/coupon-apportion/index',

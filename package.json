@@ -27,7 +27,8 @@
     "dev:rn": "npm run build:rn -- --watch",
     "dev:qq": "npm run build:qq -- --watch",
     "dev:jd": "npm run build:jd -- --watch",
-    "dev:quickapp": "npm run build:quickapp -- --watch"
+    "dev:quickapp": "npm run build:quickapp -- --watch",
+    "generate-api": "ts-node scripts/generateApi.ts"
   },
   "browserslist": [
     "last 3 versions",
@@ -55,6 +56,7 @@
     "@tarojs/runtime": "3.6.32",
     "@tarojs/shared": "3.6.32",
     "@tarojs/taro": "3.6.32",
+    "axios": "^1.8.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-refresh": "^0.11.0",

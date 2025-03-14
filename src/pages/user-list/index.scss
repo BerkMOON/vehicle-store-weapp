@@ -1,0 +1,156 @@
+.user-list-container {
+  --header-height: 64px;
+
+  .header {
+    display: flex;
+    padding: 16px;
+    height: 32px;
+    justify-content: flex-end;
+
+    .filter-btn {
+      background: #f5f5f5;
+      border: none;
+      font-size: 14px;
+      padding: 0 16px;
+      
+      &::after {
+        border: none;
+      }
+    }
+  }
+
+  .search-form {
+    padding: 16px;
+    background: #fff;
+
+    .basic-search {
+      display: flex;
+      gap: 12px;
+      
+      .search-item {
+        flex: 1;
+        margin: 0;
+      }
+    }
+
+    .advanced-search {
+      margin-top: 16px;
+      
+      .search-item {
+        margin-bottom: 12px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 16px;
+      }
+    }
+  }
+
+  .operation-bar {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .user-item {
+    margin: 0px 8px 12px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .user-info {
+      .info-row {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 14px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #666;
+          width: 70px;
+          flex-shrink: 0;
+        }
+
+        .value {
+          color: #333;
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .filter-popup {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .popup-header {
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+      
+      .title {
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
+      }
+    }
+
+    .popup-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+
+      .nut-form-item {
+        margin-bottom: 16px;
+      }
+    }
+
+    .popup-footer {
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      border-top: 1px solid #eee;
+
+      .nut-button {
+        flex: 1;
+      }
+    }
+  }
+}
+
+.create-user-modal {
+  padding: 16px;
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+}
+
+
+.user-item {
+  .user-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    
+    .nut-button {
+      flex: 1;
+    }
+  }
+}
+
+.create-user-popup {
+  --nutui-color-primary: red;
+}

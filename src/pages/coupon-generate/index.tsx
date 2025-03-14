@@ -11,8 +11,8 @@ export default function CouponGenerate() {
   const [form] = Form.useForm()
   const [formAll] = Form.useForm()
   const [currentPicker, setCurrentPicker] = useState<'start' | 'end' | null>(null)
-  const validStart = Form.useWatch('validStart', form)
-  const validEnd = Form.useWatch('validEnd', form)
+  const validStart = Form.useWatch('valid_start', form)
+  const validEnd = Form.useWatch('valid_end', form)
   const type = Form.useWatch('type', form)
   const [isAdding, setIsAdding] = useState(false)
   const [coupons, setCoupons] = useState<any[]>([])
@@ -63,17 +63,17 @@ export default function CouponGenerate() {
   const handleDateConfirm = (_, values) => {
     console.log('日期确认：', values)
     if (currentPicker === 'start') {
-      form.setFieldsValue({ validStart: values })
-      form.validateFields(['validStart'])
+      form.setFieldsValue({ valid_start: values })
+      form.validateFields(['valid_start'])
     } else if (currentPicker === 'end') {
-      form.setFieldsValue({ validEnd: values })
-      form.validateFields(['validEnd'])
+      form.setFieldsValue({ valid_end: values })
+      form.validateFields(['valid_end'])
     }
     setCurrentPicker(null)
   }
 
   const handleSaveCoupon = async (values) => {
-    const { cash, quantity, validStart, validEnd, type } = values
+    const { cash, quantity, valid_start, valid_end, type } = values
 
     // 验证金额
     if (type === CouponType.Cash) {
@@ -88,8 +88,8 @@ export default function CouponGenerate() {
     }
 
     // 验证日期
-    const start = new Date(validStart)
-    const end = new Date(validEnd)
+    const start = new Date(valid_start)
+    const end = new Date(valid_end)
     if (end <= start) {
       Taro.showToast({
         title: '结束日期必须大于开始日期',
@@ -113,8 +113,8 @@ export default function CouponGenerate() {
     setCoupons([...coupons, {
       ...values,
       cash: parseFloat(cash),
-      validStart: formatDate(validStart),
-      validEnd: formatDate(validEnd),
+      valid_start: formatDate(valid_start),
+      valid_end: formatDate(valid_end),
     }])
 
     setIsAdding(false)
@@ -131,7 +131,7 @@ export default function CouponGenerate() {
     }
 
     try {
-      const openId = formAll.getFieldValue('openId')
+      const open_id = formAll.getFieldValue('openId')
 
       const expandedCoupons = coupons.reduce((acc, coupon) => {
         const { quantity, ...couponData } = coupon
@@ -142,8 +142,8 @@ export default function CouponGenerate() {
       }, [])
 
       const res = await CouponAPI.createCoupon({
-        openId,
-        couponList: expandedCoupons
+        open_id,
+        coupon_list: expandedCoupons
       })
 
       if (res?.response_status.code === SuccessCode) {
@@ -154,6 +154,18 @@ export default function CouponGenerate() {
           title: '生成成功',
           icon: 'success'
         })
+        setTimeout(() => {
+          // 设置上一页的数据需要刷新
+          const pages = Taro.getCurrentPages()
+          const prevPage = pages[pages.length - 2]
+          if (prevPage) {
+            // @ts-ignore
+            prevPage.setData({
+              needRefresh: true
+            })
+          }
+          Taro.navigateBack()
+        }, 1000)
         setCoupons([])
       } else {
         Taro.showToast({
@@ -292,7 +304,7 @@ export default function CouponGenerate() {
         {
           type === CouponType.Insurance && <Form.Item
             label='续保信息'
-            name='maintenance'
+            name='insurance'
             rules={[{ required: true, message: '请输入续保信息' }]}
           >
             <TextArea
@@ -330,7 +342,7 @@ export default function CouponGenerate() {
 
         <Form.Item
           label='开始日期'
-          name='validStart'
+          name='valid_start'
           rules={[{ required: true, message: '请选择开始日期' }]}
         >
           <View onClick={() => setCurrentPicker('start')}>
@@ -344,7 +356,7 @@ export default function CouponGenerate() {
 
         <Form.Item
           label='结束日期'
-          name='validEnd'
+          name='valid_end'
           rules={[{ required: true, message: '请选择结束日期' }]}
         >
           <View onClick={() => setCurrentPicker('end')}>

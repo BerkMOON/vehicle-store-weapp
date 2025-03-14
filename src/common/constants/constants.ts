@@ -3,15 +3,21 @@ import { CouponBatchStatus } from "@/request/couponApi/typings.d"
 export const SuccessCode = 200
 
 export enum Role {
-  AfterSale = 1,
-  ShopManager = 2,
-  Finance = 3
+  AfterSale = 'support',
+  Admin = 'admin',
+  Finance = 'finance',
+}
+
+export const ROLES_INFO = {
+  [Role.AfterSale]: '售后',
+  [Role.Admin]: '管理员',
+  [Role.Finance]: '财务',
 }
 
 export enum CouponType {
   Cash = 1,
-  Maintenance = 2,
-  Insurance = 3,
+  Insurance = 2,
+  Maintenance = 3,
   Physical = 4
 }
 

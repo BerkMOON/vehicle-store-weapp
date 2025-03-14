@@ -1,11 +1,12 @@
 import Taro from '@tarojs/taro'
 import { Tabbar } from '@nutui/nutui-react-taro'
-import { Agenda, Board, Coupon, Find, User, Voucher } from '@nutui/icons-react-taro'
+import { Agenda, Coupon, Find, People, User } from '@nutui/icons-react-taro'
 import { useState, useEffect } from 'react'
 import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
 import { Role } from '@/common/constants/constants'
+import { useUserStore } from '@/store/user'
 
-const afterSaleTabList = [
+export const afterSaleTabList = [
   {
     pagePath: '/pages/order/index',
     text: '工单列表',
@@ -14,7 +15,7 @@ const afterSaleTabList = [
   {
     pagePath: '/pages/coupon-apportion/index',
     text: '优惠券发放',
-    icon:  <Coupon size={18} />
+    icon: <Coupon size={18} />
   },
   {
     pagePath: '/pages/mine/index',
@@ -23,23 +24,17 @@ const afterSaleTabList = [
   }
 ]
 
-const shopManagerTabList = [
-  {
-    pagePath: '/pages/accident-analysis/index',
-    text: '统计分析',
-    iconPath: '/assets/images/analysis.png',
-    selectedIconPath: '/assets/images/analysis-active.png'
-  },
+export const shopManagerTabList = [
+
   {
     pagePath: '/pages/coupon-review/index',
     text: '优惠券审核',
     icon: <Find size={18} />
   },
   {
-    pagePath: '/pages/balance-clues/index',
-    text: '线索余额',
-    iconPath: '/assets/images/balance.png',
-    selectedIconPath: '/assets/images/balance-active.png'
+    pagePath: '/pages/user-list/index',
+    text: '员工列表',
+    icon: <People size={18} />
   },
   {
     pagePath: '/pages/mine/index',
@@ -48,11 +43,11 @@ const shopManagerTabList = [
   }
 ]
 
-const financeTabList = [
+export const financeTabList = [
   {
     pagePath: '/pages/finance/index',
     text: '优惠券结算',
-    icon:  <Coupon size={18} />
+    icon: <Coupon size={18} />
   },
   {
     pagePath: '/pages/mine/index',
@@ -62,21 +57,33 @@ const financeTabList = [
 ]
 
 function CustomTabBar() {
-  const { 
+  const {
     tabInfo,
     setTabInfo
   } = useTabInfoStore()
+  const { userInfo } = useUserStore()
   const [tabList, setTabList] = useState<TabInfo[]>([])
 
   useEffect(() => {
-    const role = Taro.getStorageSync('userRole')
-    const tabList = role === Role.AfterSale ? afterSaleTabList : role === Role.ShopManager ? shopManagerTabList : financeTabList
+    const role = userInfo?.role
+    const tabList = role === Role.AfterSale ? afterSaleTabList : role === Role.Admin ? shopManagerTabList : financeTabList
     setTabList(tabList)
-    if(!tabInfo) {
+    if (!tabInfo) {
       setTabInfo(tabList[0])
     }
+
+
+    // 添加小程序隐藏和卸载时的清理函数
+    const clearTabInfo = () => {
+      setTabInfo(null)
+    }
+
+    return () => {
+      clearTabInfo()
+      Taro.offAppHide(clearTabInfo)
+    }
   }, [])
-  
+
 
   const switchTab = (tabInfo: TabInfo) => {
     setTabInfo(tabInfo)

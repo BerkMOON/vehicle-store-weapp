@@ -40,6 +40,7 @@ const config = {
       '@/common': path.resolve(__dirname, '..', 'src/common'),
       '@/store': path.resolve(__dirname, '..' ,'src/store'),
       '@/request': path.resolve(__dirname, '..','src/request'),
+      '@/hooks': path.resolve(__dirname, '..','src/hooks'),
     },
     postcss: {
       pxtransform: {

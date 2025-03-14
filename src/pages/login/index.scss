@@ -1,6 +1,8 @@
 .login-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  padding: 16px;
+  box-sizing: border-box;
   
   .login-header {
     padding: 90px 0 60px;
@@ -17,6 +19,7 @@
     background: #fff;
     border-radius: 12px;
     padding: 20px;
+    margin-top: 60px;
 
     .form-item {
       margin-bottom: 20px;

@@ -3,18 +3,24 @@ import { Input, Button, Checkbox } from '@nutui/nutui-react-taro'
 import { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import './index.scss'
+import { UserAPI } from '@/request/userApi'
+import { useUserStore } from '@/store/user'
+import { initTab } from '@/utils/utils'
+import { useTabInfoStore } from '@/store/tabInfo'
 // import Captcha from '@/components/Captcha'
 
 function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [captcha, setCaptcha] = useState('')
   const [rememberPassword, setRememberPassword] = useState(false)
+
+  const { setUserInfo } = useUserStore()
+  const { setTabInfo } = useTabInfoStore()
 
   const handleLogin = async () => {
     try {
       // 1. 表单验证
-      if (!username || !password || !captcha) {
+      if (!username || !password) {
         return Taro.showToast({
           title: '请填写完整信息',
           icon: 'none'
@@ -27,20 +33,23 @@ function Login() {
       })
 
       // 3. 调用登录接口
-      const res = await Taro.request({
-        url: 'YOUR_API_URL/login',
-        method: 'POST',
-        data: {
-          username,
-          password,
-          captcha,
-        }
+      const response = await UserAPI.login({
+        username,
+        password,
       })
 
       // 4. 处理响应
-      if (res.data.code === 0) { // 假设 0 是成功状态码
+      if (response.data.response_status.code === 200) { // 假设 0 是成功状态码
         // 存储登录信息
-        Taro.setStorageSync('token', res.data.data.token)
+        if (response?.header['Set-Cookie']) {
+          Taro.setStorageSync('cookies', response?.header['Set-Cookie'])
+        }
+
+        const userInfo = response.data.data
+
+        setUserInfo(userInfo)
+
+        initTab(userInfo.role, setTabInfo)
 
         // 如果选择了记住密码
         if (rememberPassword) {
@@ -68,12 +77,12 @@ function Login() {
       } else {
         // 登录失败
         Taro.showToast({
-          title: res.data.msg || '登录失败',
+          title: response.data.response_status.msg || '登录失败',
           icon: 'error'
         })
 
         // 刷新验证码
-        refreshCaptcha()
+        // refreshCaptcha()
       }
     } catch (error) {
       console.error('登录错误：', error)
@@ -87,11 +96,11 @@ function Login() {
   }
 
   // 刷新验证码的方法
-  const refreshCaptcha = () => {
-    // 这里添加刷新验证码的逻辑
-    // 例如：重新获取验证码图片URL
-    setCaptcha('')  // 清空验证码输入
-  }
+  // const refreshCaptcha = () => {
+  //   // 这里添加刷新验证码的逻辑
+  //   // 例如：重新获取验证码图片URL
+  //   setCaptcha('')  // 清空验证码输入
+  // }
 
   // 页面加载时检查是否有保存的登录信息
   useEffect(() => {
@@ -106,7 +115,7 @@ function Login() {
   return (
     <View className='login-container'>
       <View className='login-header'>
-        <View className='login-title'>欢迎登录易好修</View>
+        <View className='login-title'>欢迎登录易达安</View>
       </View>
 
       <View className='login-form'>
@@ -128,10 +137,6 @@ function Login() {
             onChange={(val) => setPassword(val)}
           />
         </View>
-
-        {/* <View className='form-item captcha-container'>
-          <Captcha />
-        </View> */}
 
         <View className='form-item checkbox-container'>
           <Checkbox

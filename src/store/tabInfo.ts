@@ -11,7 +11,8 @@ export interface TabInfo {
 
 interface TabState {
   tabInfo: TabInfo | null
-  setTabInfo: (tabInfo: TabInfo) => void
+  setTabInfo: (tabInfo: TabInfo | null) => void
+  initializeFromStorage: () => Promise<void>
 }
 
 // 从存储中读取数据
@@ -25,7 +26,7 @@ const loadFromStorage = async (): Promise<TabInfo | null> => {
 }
 
 // 保存数据到存储
-const saveToStorage = async (tabInfo: TabInfo) => {
+const saveToStorage = async (tabInfo: TabInfo | null) => {
   // 只保存已完成的下载记录
   await Taro.setStorage({
     key: STORAGE_KEY,

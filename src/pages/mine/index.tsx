@@ -10,13 +10,6 @@ function Index() {
   const userRole = Taro.getStorageSync('userRole')
   const roleText = userRole === 'afterSale' ? '售后' : '店总'
 
-  // 切换角色
-  const handleSwitchRole = () => {
-    Taro.reLaunch({
-      url: '/pages/role-select/index'
-    })
-  }
-
   // 修改密码
   const handleChangePassword = () => {
     Taro.navigateTo({
@@ -32,7 +25,7 @@ function Index() {
       success: (res) => {
         if (res.confirm) {
           // 清除登录信息
-          Taro.removeStorageSync('token')
+          Taro.removeStorageSync('cookies')
           Taro.removeStorageSync('userRole')
           Taro.removeStorageSync('loginInfo')
           
@@ -62,12 +55,6 @@ function Index() {
         </View>
 
         <View className="action-list">
-          <Button 
-            className="action-btn"
-            onClick={handleSwitchRole}
-          >
-            切换角色
-          </Button>
           <Button 
             className="action-btn"
             onClick={handleChangePassword}
