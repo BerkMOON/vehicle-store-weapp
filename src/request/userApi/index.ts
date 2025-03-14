@@ -13,7 +13,7 @@ import {
 } from './typings'
 import Taro from "@tarojs/taro"
 
-const prefix_ = '/api/business'
+const prefix_ = TARO_APP_API_BASE_URL + '/api/business'
 const prefix = `${prefix_}/user`
 
 export const UserAPI = {

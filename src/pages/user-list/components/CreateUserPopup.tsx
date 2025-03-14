@@ -3,7 +3,6 @@ import { Form, Input, Button, Popup } from '@nutui/nutui-react-taro'
 import { UserAPI } from '@/request/userApi'
 import Taro from '@tarojs/taro'
 import RolePicker from '@/components/RolePicker'
-import { useEffect } from 'react'
 
 interface CreateUserPopupProps {
   visible: boolean

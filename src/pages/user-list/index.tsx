@@ -124,7 +124,6 @@ function UserList() {
           fetchData={fetchData}
           renderItem={renderItem}
           emptyText='暂无用户数据'
-          autoLoad
         />
 
         <FilterPopup

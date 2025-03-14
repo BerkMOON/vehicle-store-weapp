@@ -2,7 +2,7 @@ import { ResponseInfoType } from "types/common"
 import { getRequest, postRequest } from ".."
 import { CouponBatchInfo, CouponBatchParams, CouponInfo, CouponInfoList, CouponParams, CouponStatus, CreateCouponParams } from "./typings"
 
-const prefix = '/api/business/coupon'
+const prefix = TARO_APP_API_BASE_URL + '/api/business/coupon'
 
 export const CouponAPI = {
 

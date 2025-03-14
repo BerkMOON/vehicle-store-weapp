@@ -63,6 +63,7 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
     setData([])
     setPage(1)
     setHasMore(true)
+    setIsSkeletonShow(true)
     handleFetch()
   }
 

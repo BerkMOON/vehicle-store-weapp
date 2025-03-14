@@ -12,7 +12,6 @@ export default defineAppConfig({
     'pages/coupon-review/detail/index',
     'pages/finance/index',
     'pages/user-list/index',
-    'pages/user-list/create/index'
   ],
   tabBar: {
     custom: true,
