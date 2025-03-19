@@ -58,7 +58,7 @@ export default function EditInfoPopup({ visible, onClose, onSuccess, currentUser
             </Form.Item>
             <View className='popup-footer'>
               <Button onClick={onClose}>取消</Button>
-              <Button formType='submit' type='primary'>确定</Button>
+              <Button formType='submit' color="#4e54c8">确定</Button>
             </View>
           </Form>
         </View>

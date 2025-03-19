@@ -20,7 +20,6 @@ export default function CouponReview() {
 
   const fetchData = async ({ status, page }: { status: string; page: number }) => {
     const res = await CouponAPI.getCouponBatchList({
-      creator: '1',
       status,
       page,
       limit: 10
@@ -45,8 +44,8 @@ export default function CouponReview() {
         description={
           <View className='coupon-info'>
             <View className='count-tag'>数量：{coupon.coupon_count}</View>
-            <View className='creator'>创建人：{coupon.creator}</View>
-            <View className='remark'>备注：{coupon.remark || '-'}</View>
+            <View className='creator'>创建人：{coupon.creator_name}</View>
+            <View className='remark'>审核意见：{coupon.remark || '-'}</View>
           </View>
         }
         extra={

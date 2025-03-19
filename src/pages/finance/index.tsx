@@ -7,6 +7,7 @@ import GeneralPage from '@/components/GeneralPage'
 import { CouponAPI } from '@/request/couponApi'
 import { CouponInfo, CouponStatus } from '@/request/couponApi/typings.d'
 import { COUPON_TYPES, CouponType, SuccessCode } from '@/common/constants/constants'
+import emptyImg from '@/assets/empty.png'
 import './index.scss'
 
 export default function Finance() {
@@ -152,7 +153,7 @@ export default function Finance() {
                     </Button>
                   </View>
                 )}
-              </> : <Empty description='暂无优惠券信息' />
+              </> : <Empty description='暂无优惠券信息' image={emptyImg} />
             }
           </Skeleton>
         </View>

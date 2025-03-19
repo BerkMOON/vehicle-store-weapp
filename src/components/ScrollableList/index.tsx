@@ -1,6 +1,7 @@
 import { ScrollView, View } from '@tarojs/components'
 import { Empty, Skeleton } from '@nutui/nutui-react-taro'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import emptyImg from '@/assets/empty.png'
 import './index.scss'
 
 interface ScrollableListProps<T> {
@@ -80,7 +81,7 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
       <View className='scroll-view-content'>
         <Skeleton rows={10} title animated visible={!isSkeletonShow}>
           {data.length === 0 ? (
-            <Empty description={emptyText} />
+            <Empty description={emptyText} image={emptyImg} />
           ) : (
             <>
               {data.map(renderItem)}

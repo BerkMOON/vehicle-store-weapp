@@ -39,7 +39,7 @@ export default function FilterPopup({ visible, onClose, onSearch, onReset, form 
         </View>
         <View className='popup-footer'>
           <Button onClick={onReset}>重置</Button>
-          <Button type='primary' onClick={onSearch}>确定</Button>
+          <Button color="#4e54c8" onClick={onSearch}>确定</Button>
         </View>
       </View>
     </Popup>

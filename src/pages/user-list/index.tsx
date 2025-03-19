@@ -41,7 +41,7 @@ function UserList() {
         try {
           await UserAPI.status({
             user_id: user.id!,
-            status: user.status?.code === 1 ? 2 : 1
+            status: user.status?.code === 1 ? 'deleted' : 'active'
           })
           Dialog.close('disable')
           Taro.showToast({ title: '操作成功', icon: 'success' })
@@ -97,7 +97,7 @@ function UserList() {
         <Button size='small' onClick={() => handleEditRole(user)}>修改角色</Button>
         <Button
           size='small'
-          type={user.status?.code === 1 ? 'danger' : 'primary'}
+          type={user.status?.code === 1 ? 'danger' : 'info'}
           onClick={() => handleStatusChange(user)}
         >
           {user.status?.code === 1 ? '禁用' : '启用'}
@@ -112,7 +112,7 @@ function UserList() {
         <View className='header'>
           <Button className='filter-btn' onClick={() => setShowFilter(true)}>筛选</Button>
           <Button
-            type='primary'
+            color='#4e54c8'
             onClick={() => setShowCreate(true)}
           >
             新建员工

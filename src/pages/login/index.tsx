@@ -49,8 +49,6 @@ function Login() {
 
         setUserInfo(userInfo)
 
-        initTab(userInfo.role, setTabInfo)
-
         // 如果选择了记住密码
         if (rememberPassword) {
           Taro.setStorageSync('loginInfo', {
@@ -68,12 +66,8 @@ function Login() {
           icon: 'success'
         })
 
-        // 延迟跳转到首页
-        setTimeout(() => {
-          Taro.reLaunch({
-            url: '/pages/index/index'
-          })
-        }, 1500)
+
+        initTab(userInfo.role, setTabInfo)
       } else {
         // 登录失败
         Taro.showToast({
@@ -90,8 +84,6 @@ function Login() {
         title: '网络错误，请重试',
         icon: 'error'
       })
-    } finally {
-      Taro.hideLoading()
     }
   }
 
@@ -149,7 +141,7 @@ function Login() {
 
         <Button
           block
-          type='primary'
+          color="#4e54c8"
           className='login-button'
           onClick={handleLogin}
         >

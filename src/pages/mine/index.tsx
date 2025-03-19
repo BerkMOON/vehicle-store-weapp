@@ -56,12 +56,12 @@ function Index() {
         </View>
 
         <View className="action-list">
-          <Button
+          {/* <Button
             className="action-btn"
             onClick={handleChangePassword}
           >
             修改密码
-          </Button>
+          </Button> */}
           <Button
             className="action-btn logout-btn"
             onClick={handleLogout}

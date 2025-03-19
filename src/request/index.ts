@@ -28,7 +28,6 @@ export const postRequest = async <T>(config: any): Promise<T | null> => {
   const { url, params } = config
   try {
     const cookie = Taro.getStorageSync('cookies')
-    console.log(params,'params')
     const res = await Taro.request({
       url,
       method: 'POST',

@@ -47,7 +47,6 @@ export default function CouponReviewDetail() {
     try {
       // 获取批次信息
       const batchRes = await CouponAPI.getCouponBatchList({
-        creator: '1',
         batch_no
       })
       setBatchInfo(batchRes?.data.list?.[0])
@@ -78,7 +77,6 @@ export default function CouponReviewDetail() {
       const res = await CouponAPI.reviewCouponBatch({
         batch_no: batchInfo?.batch_no || '',
         status,
-        operator: 1,
         ...(status === 3 && { remark: rejectReason })
       })
 
@@ -125,7 +123,7 @@ export default function CouponReviewDetail() {
               }
               <Cell title='审核单号' description={batchInfo.batch_no} />
               <Cell title='优惠券数量' description={batchInfo.coupon_count} />
-              <Cell title='创建人' description={batchInfo.creator} />
+              <Cell title='创建人' description={batchInfo.creator_name} />
               <Cell title='备注信息' description={batchInfo.remark || '-'} />
             </Cell.Group>
           </View>

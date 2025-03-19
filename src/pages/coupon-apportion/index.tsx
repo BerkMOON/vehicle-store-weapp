@@ -26,7 +26,6 @@ export default function CouponApportion() {
 
   const fetchData = async ({ status, page }: { status: string; page: number }) => {
     const res = await CouponAPI.getCouponBatchList({
-      creator: '1',
       status,
       page,
       limit: 10
@@ -45,7 +44,7 @@ export default function CouponApportion() {
         description={
           <View className='coupon-info'>
             <View className='count-tag'>优惠券数量：{coupon.coupon_count}</View>
-            <View className='description'>备注：{coupon.remark || '-'}</View>
+            <View className='description'>审核意见：{coupon.remark || '-'}</View>
           </View>
         }
         onClick={() => handleExpand(coupon.batch_no)}

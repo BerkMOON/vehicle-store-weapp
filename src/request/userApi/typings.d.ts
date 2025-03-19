@@ -71,7 +71,7 @@ export interface GetAllBusinessUsersResponse {
 // 更新b端用户状态 请求参数
 export interface StatusRequest {
   user_id: number
-  status: number
+  status: string
 }
 // 更新b端用户信息 请求参数
 export interface UpdateRequest {

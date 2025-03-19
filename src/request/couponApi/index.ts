@@ -62,7 +62,6 @@ export const CouponAPI = {
   reviewCouponBatch: (params: {
     batch_no: string
     status: number
-    operator: number
     remark?: string
   }) => postRequest<ResponseInfoType<null>>({
     url: `${prefix}/updateCouponBatchStatus`,

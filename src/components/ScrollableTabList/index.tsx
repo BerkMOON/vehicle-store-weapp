@@ -1,6 +1,7 @@
 import { ScrollView, View } from '@tarojs/components'
 import { Empty, Skeleton, Tabs } from '@nutui/nutui-react-taro'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import emptyImg from '@/assets/empty.png'
 import './index.scss'
 
 export interface TabItem {
@@ -18,6 +19,7 @@ interface ScrollableTabListProps<T> {
   pageSize?: number
   autoLoad?: boolean
   className?: string
+  tabsTitle?: () => JSX.Element[]
 }
 
 const ScrollableTabList = forwardRef(<T,>(props: ScrollableTabListProps<T>, ref) => {
@@ -30,7 +32,8 @@ const ScrollableTabList = forwardRef(<T,>(props: ScrollableTabListProps<T>, ref)
     emptyText = '暂无数据',
     pageSize = 10,
     autoLoad = true,
-    className = ''
+    className = '',
+    tabsTitle
   } = props
   const [loading, setLoading] = useState(false)
   const [isSkeletonShow, setIsSkeletonShow] = useState(true)
@@ -68,10 +71,8 @@ const ScrollableTabList = forwardRef(<T,>(props: ScrollableTabListProps<T>, ref)
 
   const handleTabChange = (value: string) => {
     onTabChange(value)
-    if (!dataMap[value]) {
-      setIsSkeletonShow(true)
-      handleFetch(value)
-    }
+    setIsSkeletonShow(true)
+    handleFetch(value)
   }
 
   const onScrollToLower = () => {
@@ -101,7 +102,7 @@ const ScrollableTabList = forwardRef(<T,>(props: ScrollableTabListProps<T>, ref)
   }))
 
   return (
-    <Tabs value={activeTab} onChange={handleTabChange} className={className}>
+    <Tabs value={activeTab} onChange={handleTabChange} className={className} title={tabsTitle}>
       {tabs.map(tab => (
         <Tabs.TabPane key={tab.value} title={tab.title} value={tab.value}>
           <ScrollView
@@ -112,7 +113,7 @@ const ScrollableTabList = forwardRef(<T,>(props: ScrollableTabListProps<T>, ref)
             <View className='scroll-view-content'>
               <Skeleton rows={10} title animated visible={!isSkeletonShow}>
                 {dataMap[activeTab]?.length === 0 ? (
-                  <Empty description={emptyText} />
+                  <Empty description={emptyText} image={emptyImg} />
                 ) : (
                   <>
                     {dataMap[activeTab]?.map(renderItem)}

@@ -41,6 +41,7 @@ const config = {
       '@/store': path.resolve(__dirname, '..' ,'src/store'),
       '@/request': path.resolve(__dirname, '..','src/request'),
       '@/hooks': path.resolve(__dirname, '..','src/hooks'),
+      '@/assets': path.resolve(__dirname, '..','src/assets'),
     },
     postcss: {
       pxtransform: {

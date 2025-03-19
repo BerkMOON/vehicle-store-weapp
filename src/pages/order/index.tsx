@@ -1,111 +1,172 @@
+import { Text, View } from '@tarojs/components'
+import { Button } from '@nutui/nutui-react-taro'
 import Taro from '@tarojs/taro'
-import { View, Icon } from '@tarojs/components'
-import { Tabs } from '@nutui/nutui-react-taro'
-import { useEffect, useState } from 'react'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'
+import ScrollableTabList from '@/components/ScrollableTabList'
+import { TaskAPI, TaskStatus, TaskType } from '@/request/taskApi'
+import { useRef, useState } from 'react'
+import { TaskInfo } from '@/request/taskApi/typings'
+import FollowPopup from './components/FollowPopup'
 
+const tabs = [
+  { title: '待处理', value: TaskStatus.Pending },
+  { title: '处理中', value: TaskStatus.Processing },
+  { title: '已返厂', value: TaskStatus.Returned },
+  { title: '已失效', value: TaskStatus.Rejected },
+  { title: '全部', value: TaskStatus.All },
+  // {
+  //   title: '',
+  //   name: '5',
+  //   icon: <Icon style={{ paddingTop: '15px' }} size="14px" type="search" />,
+  //   onClick: () => Taro.navigateTo({
+  //     url: `/pages/order-search/index`
+  //   })
+  // }
+]
 
 function Index() {
-  const [activeTab, setActiveTab] = useState('0')
-  const [workOrders, setWorkOrders] = useState<any[]>([])
+  const [activeTab, setActiveTab] = useState<string>(TaskStatus.Pending)
+  const scrollableTabRef = useRef<any>(null)
 
-  const tabs = [
-    { title: '待跟进', name: '0' },
-    { title: '跟进中', name: '1' },
-    { title: '已回厂', name: '2' },
-    { title: '战败', name: '3' },
-    { title: '全部', name: '4' },
-    {
-      title: '',
-      name: '5',
-      icon: <Icon style={{ paddingTop: '15px' }} size="14px" type="search" />,
-      onClick: () => Taro.navigateTo({
-        url: `/pages/order-search/index`
-      })
+  const fetchData = async ({ status, page }: { status: string; page: number }) => {
+    const params: any = {
+      offset: (page - 1) * 10,
+      limit: 10
     }
-  ]
 
-  const contentItems = [
-    { label: '车型', value: 'carModel' },
-    { label: '车架号', value: 'frameNumber' },
-    { label: '工单来源', value: 'source' },
-    { label: '车架号', value: 'vin' },
-    { label: '创建时间', value: 'createTime' },
-    { label: '门店名称', value: 'storeName' }
-  ]
-
-  useEffect(() => {
-    setWorkOrders([{
-      orderNo: '123456',
-      carModel: '宝马X5',
-      source: '官网',
-      vin: '1234567890',
-      createTime: '2024-01-01',
-      storeName: '北京4S店',
-      frameNumber: '1234567890'
-    }, {
-      orderNo: '123457',
-      carModel: '宝马X6',
-      source: '官网',
-      vin: '1234567890',
-      createTime: '2024-01-01',
-      storeName: '北京4S店',
-      frameNumber: '1234567890'
-    },
-    {
-      orderNo: '123458',
-      carModel: '宝马X7',
-      source: '官网',
-      vin: '1234567890',
-      createTime: '2024-01-01',
-      storeName: '北京4S店',
-      frameNumber: '1234567890'
+    if (status !== TaskStatus.All) {
+      params.status = status
     }
-    ])
-  }, [activeTab])
 
+    const res = await TaskAPI.List(params)
+    return res?.data?.task_list || []
+  }
 
-  const handleViewDetail = (orderNo: string) => {
+  const handleViewDetail = (id: number) => {
     Taro.navigateTo({
-      url: `/pages/order-detail/index?orderNo=${orderNo}`
+      url: `/pages/order-detail/index?taskId=${id}`
     })
   }
 
-  const handleTransfer = (orderNo: string) => {
-    console.log('转单', orderNo)
+  const handleTransfer = async (order: TaskInfo) => {
+    try {
+      const res = await TaskAPI.Accept({
+        clue_id: order.clue_id,
+        task_id: order.id
+      })
+
+      if (res?.response_status?.code === 200) {
+        Taro.showToast({
+          title: '认领成功',
+          icon: 'success'
+        })
+        // 刷新列表
+        scrollableTabRef.current?.refresh()
+      } else {
+        Taro.showToast({
+          title: res?.response_status?.msg || '认领失败',
+          icon: 'error'
+        })
+      }
+    } catch (error) {
+      Taro.showToast({
+        title: '认领失败',
+        icon: 'error'
+      })
+    }
   }
 
-  const handleFollow = (orderNo: string) => {
-    console.log('跟进', orderNo)
+  const [showFollow, setShowFollow] = useState(false)
+  const [currentOrder, setCurrentOrder] = useState<TaskInfo | null>(null)
+
+  const handleFollow = (order: TaskInfo) => {
+    setCurrentOrder(order)
+    setShowFollow(true)
   }
 
-  const WorkOrderItem = ({ order, items }) => {
+  const handleFollowSubmit = async (values: { status: string; remark: string }) => {
+    try {
+      const res = await TaskAPI.Process({
+        task_id: currentOrder!.id,
+        clue_id: currentOrder!.clue_id,
+        status: values.status,
+        remark: values.remark
+      })
+
+      if (res?.response_status?.code === 200) {
+        Taro.showToast({
+          title: '跟进成功',
+          icon: 'success'
+        })
+        setShowFollow(false)
+        scrollableTabRef.current?.refresh()
+      } else {
+        Taro.showToast({
+          title: res?.response_status?.msg || '跟进失败',
+          icon: 'error'
+        })
+      }
+    } catch (error) {
+      Taro.showToast({
+        title: '跟进失败',
+        icon: 'error'
+      })
+    }
+  }
+
+  const renderItem = (order: TaskInfo) => {
     return (
-      <View className='work-order-item'>
+      <View className='work-order-item' key={order.clue_id}>
         <View className='order-header'>
-          <View className='order-number'>工单号：{order.orderNo}</View>
+          <Text className='order-number'>工单号：</Text>
+          <Text className='order-text'>{order.clue_id}</Text>
         </View>
 
         <View className='order-content'>
-          {items.map((item, index) => (
-            <View key={index} className='content-row'>
-              <View className='label'>{item.label}：</View>
-              <View className='value'>{order[item.value]}</View>
-            </View>
-          ))}
+          {/* <View className='content-row'>
+            <View className='label'>车型：</View>
+            <View className='value'>{order.}</View>
+          </View> */}
+          <View className='content-row'>
+            <View className='label'>车架号：</View>
+            <View className='value'>{order.vin}</View>
+          </View>
+          <View className='content-row'>
+            <View className='label'>上报时间</View>
+            <View className='value'>{order.report_time}</View>
+          </View>
+          <View className='content-row'>
+            <View className='label'>设备号</View>
+            <View className='value'>{order.device_id}</View>
+          </View>
+          <View className='content-row'>
+            <View className='label'>处理人</View>
+            <View className='value'>{order.handler_name}</View>
+          </View>
+          <View className='content-row'>
+            <View className='label'>状态</View>
+            <View className='value'>{order.status.name}</View>
+          </View>
+          <View className='content-row'>
+            <View className='label'>备注</View>
+            <View className='value'>{order.remark}</View>
+          </View>
         </View>
 
         <View className='order-footer'>
-          <View className='btn' onClick={() => handleViewDetail(order.orderNo)}>
+          <Button size='small' onClick={() => handleViewDetail(order.id)}>
             查看详情
-          </View>
-          <View className='btn' onClick={() => handleTransfer(order.orderNo)}>
-            转单
-          </View>
-          <View className='btn primary' onClick={() => handleFollow(order.orderNo)}>
+          </Button>
+          {
+            order.status.code === TaskType.Pending ?
+              <Button size='small' color="#4e54c8" onClick={() => handleTransfer(order)}>
+                认领
+              </Button> : null
+          }
+          <Button size='small' color="#4e54c8" onClick={() => handleFollow(order)}>
             跟进
-          </View>
+          </Button>
         </View>
       </View>
     )
@@ -114,39 +175,41 @@ function Index() {
   return (
     <GeneralPage>
       <View className='index-container'>
-        <Tabs
+        <ScrollableTabList
+          ref={scrollableTabRef}
+          tabs={tabs}
+          // tabsTitle={() => {
+          //   return tabs.map((item) => (
+          //     <div
+          //       onClick={() => {
+          //         if (!item.icon) {
+          //           setActiveTab(item.name)
+          //         } else {
+          //           item.onClick()
+          //         }
+          //       }}
+          //       className={`nut-tabs-titles-item ${activeTab === item.name ? 'nut-tabs-titles-item-active' : ''}`}
+          //       key={item.name}
+          //     >
+          //       {item.icon || null}
+          //       <span className="nut-tabs-titles-item-text">{item.title}</span>
+          //       <span className="nut-tabs-titles-item-line" />
+          //     </div>
+          //   ))
+          // }}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          fetchData={fetchData}
+          renderItem={renderItem}
+          emptyText='暂无工单数据'
           className='fixed-tabs'
-          value={activeTab}
-          title={() => {
-            return tabs.map((item) => (
-              <div
-                onClick={() => {
-                  if (!item.icon) {
-                    setActiveTab(item.name)
-                  } else {
-                    item.onClick()
-                  }
-                }}
-                className={`nut-tabs-titles-item ${activeTab === item.name ? 'nut-tabs-titles-item-active' : ''}`}
-                key={item.name}
-              >
-                {item.icon || null}
-                <span className="nut-tabs-titles-item-text">{item.title}</span>
-                <span className="nut-tabs-titles-item-line" />
-              </div>
-            ))
-          }}
-        >
-          {tabs.map(tab => (
-            <Tabs.TabPane key={tab.name} value={tab.name} title={tab.title}>
-              <View className='order-list'>
-                {workOrders.map(order => (
-                  <WorkOrderItem key={order.orderNo} order={order} items={contentItems} />
-                ))}
-              </View>
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
+          autoLoad
+        />
+        <FollowPopup
+          visible={showFollow}
+          onClose={() => setShowFollow(false)}
+          onSubmit={handleFollowSubmit}
+        />
       </View>
     </GeneralPage>
   )

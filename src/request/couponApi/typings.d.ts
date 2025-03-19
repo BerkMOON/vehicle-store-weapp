@@ -39,6 +39,7 @@ export interface CouponBatch {
   operator: string // 操作人
   coupon_count: number // 优惠券数量
   company_Id: number,
+  creator_name: string,
   store_Id: number,
   remark: string,
 }
