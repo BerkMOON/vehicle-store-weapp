@@ -11,13 +11,6 @@ function Index() {
   // 获取用户角色
   const { userInfo } = useUserStore()
 
-  // 修改密码
-  const handleChangePassword = () => {
-    Taro.navigateTo({
-      url: '/pages/change-password/index'
-    })
-  }
-
   // 退出登录
   const handleLogout = () => {
     Taro.showModal({
