@@ -6,18 +6,29 @@ import { TaskAPI } from '@/request/taskApi'
 import { useRouter } from '@tarojs/taro'
 import { TaskInfo } from '@/request/taskApi/typings'
 import Taro from '@tarojs/taro'
+import { MapAPI } from '@/request/mapApi'
 
 function OrderDetail() {
   const router = useRouter()
   const [orderInfo, setOrderInfo] = useState<TaskInfo>()
+  const [localVideoUrl, setLocalVideoUrl] = useState<string>('')
+  const [addressInfo, setAddressInfo] = useState<string>('')
 
   const fetchDetail = async () => {
     try {
       const res = await TaskAPI.Detail(
-        router.params.taskId || ''
+        router.params.clueId || ''
       )
       if (res?.response_status?.code === 200) {
         setOrderInfo(res?.data)
+
+        if (res?.data.gps?.lng && res?.data.gps?.lat) {
+          const gdMapInfo = await MapAPI.getGDAddressInfo({
+            location: `${res.data.gps.lng},${res.data.gps.lat}`
+          })
+          const address = gdMapInfo?.regeocode?.formatted_address
+          setAddressInfo(address)
+        }
       }
     } catch (error) {
       console.error('获取详情失败:', error)
@@ -26,13 +37,36 @@ function OrderDetail() {
 
   useEffect(() => {
     fetchDetail()
-  }, [router.params.taskId])
+  }, [router.params.clueId])
 
   const handleAction = (type: 'confirm' | 'transfer' | 'updateValue' | 'follow') => {
     console.log('操作类型：', type)
   }
 
-  const [localVideoUrl, setLocalVideoUrl] = useState<string>('')
+
+  const handleLocation = () => {
+    Taro.getLocation({
+      type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+      success(res) {
+        const latitude = res.latitude
+        const longitude = res.longitude
+        Taro.openLocation({
+          latitude,
+          longitude,
+          scale: 18,
+          name: '事故位置',
+          address: addressInfo
+        })
+      }
+    })
+    // Taro.openLocation({
+    //   latitude: 116.407497,
+    //   longitude: 39.902949,
+    //   scale: 18,
+    //   name: '事故位置',
+    //   address: addressInfo
+    // })
+  }
 
   useEffect(() => {
     if (orderInfo?.video_url) {
@@ -86,11 +120,18 @@ function OrderDetail() {
         </View>
       </View>
 
-      {/* 车辆服务状况 */}
-      {/* <View className='section'>
-        <View className='section-title'>车辆服务状况</View>
-        <OrderContent items={orderInfo.serviceInfo} />
-      </View> */}
+      {/* 事故地点 */}
+      {
+        addressInfo && <View className='section'>
+          <View className='section-title'>事故地点</View>
+          <View className='follow-record'>
+            <View>地点信息：{addressInfo}</View>
+            <View className='address-info'>
+              <Button color='#4e54c8' onClick={handleLocation}>路线规划</Button>
+            </View>
+          </View>
+        </View>
+      }
 
       {/* 视频详情 */}
       <View className='section'>

@@ -12,6 +12,10 @@ export interface TaskInfo {
   clue_id: string
   device_id: string
   vin: string
+  gps: {
+    lat: string;
+    lng: string;
+  }
   report_time: string
   video_url: string
   handler_name: string

@@ -51,6 +51,9 @@ export default defineAppConfig({
   permission: {
     "scope.userInfo": {
       desc: "获取用户信息"
+    },
+    "scope.userLocation": {
+      desc: "你的位置信息将用于小程序定位"
     }
   },
 })

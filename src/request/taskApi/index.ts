@@ -51,10 +51,10 @@ export const TaskAPI = {
    * 接口ID：273166677
    * 接口地址：https://app.apifox.com/link/project/5084807/apis/api-273166677
    */
-  Detail: (taskId: string) => getRequest<ResponseInfoType<TaskInfo>>({
+  Detail: (clueId: string) => getRequest<ResponseInfoType<TaskInfo>>({
     url: `${prefix}/detail`,
     params: {
-      task_id: taskId
+      clue_id: clueId
     }
   })
 }

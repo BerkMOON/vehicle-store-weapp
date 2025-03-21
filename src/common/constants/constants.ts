@@ -1,6 +1,8 @@
 import { CouponBatchStatus } from "@/request/couponApi/typings.d"
 
 export const SuccessCode = 200
+export const WxMapApiKey = 'CPSBZ-IKTWZ-VQYX5-7Z62Q-5FZ45-OBFFG'
+export const GdMapApiKey = '69f9cef535c817b54549ce47311db813'
 
 export enum Role {
   AfterSale = 'support',

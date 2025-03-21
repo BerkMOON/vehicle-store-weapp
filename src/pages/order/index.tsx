@@ -1,6 +1,6 @@
 import { Text, View } from '@tarojs/components'
 import { Button } from '@nutui/nutui-react-taro'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'
 import ScrollableTabList from '@/components/ScrollableTabList'
@@ -15,14 +15,6 @@ const tabs = [
   { title: '已返厂', value: TaskStatus.Returned },
   { title: '已失效', value: TaskStatus.Rejected },
   { title: '全部', value: TaskStatus.All },
-  // {
-  //   title: '',
-  //   name: '5',
-  //   icon: <Icon style={{ paddingTop: '15px' }} size="14px" type="search" />,
-  //   onClick: () => Taro.navigateTo({
-  //     url: `/pages/order-search/index`
-  //   })
-  // }
 ]
 
 function Index() {
@@ -43,9 +35,9 @@ function Index() {
     return res?.data?.task_list || []
   }
 
-  const handleViewDetail = (id: number) => {
+  const handleViewDetail = (id: string) => {
     Taro.navigateTo({
-      url: `/pages/order-detail/index?taskId=${id}`
+      url: `/pages/order-detail/index?clueId=${id}`
     })
   }
 
@@ -115,6 +107,11 @@ function Index() {
     }
   }
 
+  useDidShow(() => {
+    // 调用组件的刷新方法
+    scrollableTabRef.current?.refresh()
+  })
+
   const renderItem = (order: TaskInfo) => {
     return (
       <View className='work-order-item' key={order.clue_id}>
@@ -124,10 +121,6 @@ function Index() {
         </View>
 
         <View className='order-content'>
-          {/* <View className='content-row'>
-            <View className='label'>车型：</View>
-            <View className='value'>{order.}</View>
-          </View> */}
           <View className='content-row'>
             <View className='label'>车架号：</View>
             <View className='value'>{order.vin}</View>
@@ -155,7 +148,7 @@ function Index() {
         </View>
 
         <View className='order-footer'>
-          <Button size='small' onClick={() => handleViewDetail(order.id)}>
+          <Button size='small' onClick={() => handleViewDetail(order.clue_id)}>
             查看详情
           </Button>
           {
@@ -178,32 +171,13 @@ function Index() {
         <ScrollableTabList
           ref={scrollableTabRef}
           tabs={tabs}
-          // tabsTitle={() => {
-          //   return tabs.map((item) => (
-          //     <div
-          //       onClick={() => {
-          //         if (!item.icon) {
-          //           setActiveTab(item.name)
-          //         } else {
-          //           item.onClick()
-          //         }
-          //       }}
-          //       className={`nut-tabs-titles-item ${activeTab === item.name ? 'nut-tabs-titles-item-active' : ''}`}
-          //       key={item.name}
-          //     >
-          //       {item.icon || null}
-          //       <span className="nut-tabs-titles-item-text">{item.title}</span>
-          //       <span className="nut-tabs-titles-item-line" />
-          //     </div>
-          //   ))
-          // }}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           fetchData={fetchData}
           renderItem={renderItem}
           emptyText='暂无工单数据'
           className='fixed-tabs'
-          autoLoad
+          autoLoad={false}
         />
         <FollowPopup
           visible={showFollow}
