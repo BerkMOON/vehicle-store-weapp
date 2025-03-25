@@ -13,9 +13,11 @@
     background: #fff;
 
     .nut-tabs-content {
-      height: calc(100vh - 94px); // 减去tabs头部(44px)和底部tabbar(50px)的高度,
-      padding-bottom: constant(safe-area-inset-bottom);
-      padding-bottom: env(safe-area-inset-bottom);
+      height: calc(100vh - 94px - constant(safe-area-inset-bottom)); // 减去tabs头部(44px)和底部tabbar(50px)的高度,
+
+      .nut-tabpane {
+        padding: 0 20px;
+      }
 
       ::-webkit-scrollbar {
         display: none;

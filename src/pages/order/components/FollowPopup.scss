@@ -1,0 +1,23 @@
+.follow-popup {
+  padding: 16px;
+  --nutui-color-primary: red;
+
+  .popup-header {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .popup-footer {
+    margin-top: 24px;
+    display: flex;
+    width: 100%;
+    gap: 12px;
+    justify-content: center;
+
+    .nut-button {
+      min-width: 120px;
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { View } from '@tarojs/components'
-import { Form, Popup, Radio, Input, Button, TextArea } from '@nutui/nutui-react-taro'
+import { Form, Popup, Radio, Button, TextArea } from '@nutui/nutui-react-taro'
 import { TaskStatus } from '@/request/taskApi'
+import './FollowPopup.scss'
 
 interface FollowPopupProps {
   visible: boolean

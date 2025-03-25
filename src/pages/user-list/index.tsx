@@ -50,7 +50,10 @@ function UserList() {
           Dialog.close('disable')
           Taro.showToast({ title: '操作失败', icon: 'error' })
         }
-      }
+      },
+      onCancel: () => {
+        Dialog.close('disable')
+      },
     })
   }
 

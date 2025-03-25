@@ -13,6 +13,14 @@ export default defineAppConfig({
     'pages/finance/index',
     'pages/user-list/index',
   ],
+  subPackages: [
+    {
+      root: 'packageQuality',
+      pages: [
+        'pages/index/index'
+      ]
+    }
+  ],
   tabBar: {
     custom: true,
     list: [

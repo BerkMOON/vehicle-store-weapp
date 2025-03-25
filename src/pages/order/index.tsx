@@ -114,7 +114,7 @@ function Index() {
 
   const renderItem = (order: TaskInfo) => {
     return (
-      <View className='work-order-item' key={order.clue_id}>
+      <View className='work-order-item' key={order.clue_id} onClick={() => handleViewDetail(order.clue_id)}>
         <View className='order-header'>
           <Text className='order-number'>工单号：</Text>
           <Text className='order-text'>{order.clue_id}</Text>

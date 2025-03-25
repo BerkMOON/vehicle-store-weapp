@@ -3,6 +3,12 @@
 
   .scroll-view-content {
     padding: 16px;
+
+    .nut-skeleton {
+      background-color: #fff;
+      padding: 12px;
+      box-sizing: border-box;
+    }
   }
 
   .loading,

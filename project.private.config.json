@@ -5,5 +5,18 @@
     "compileHotReLoad": true,
     "urlCheck": false
   },
-  "libVersion": "3.7.10"
+  "libVersion": "3.7.10",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "质检",
+          "pathName": "/packageQuality/pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

@@ -6,7 +6,7 @@ import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
 import { Role } from '@/common/constants/constants'
 import { useUserStore } from '@/store/user'
 
-export const afterSaleTabList = [
+export const supportTabList = [
   {
     pagePath: '/pages/order/index',
     text: '工单列表',
@@ -24,7 +24,7 @@ export const afterSaleTabList = [
   }
 ]
 
-export const shopManagerTabList = [
+export const adminTabList = [
 
   {
     pagePath: '/pages/coupon-review/index',
@@ -66,7 +66,7 @@ function CustomTabBar() {
 
   useEffect(() => {
     const role = userInfo?.role
-    const tabList = role === Role.AfterSale ? afterSaleTabList : role === Role.Admin ? shopManagerTabList : financeTabList
+    const tabList = role === Role.Support ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
     setTabList(tabList)
     if (!tabInfo) {
       setTabInfo(tabList[0])

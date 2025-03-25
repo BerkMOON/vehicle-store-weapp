@@ -2,8 +2,12 @@
   height: calc(100vh - var(--header-height) - var(--tabs-height) - var(--tabbar-height) - env(safe-area-inset-bottom));
   
   .scroll-view-content {
-    padding: 12px;
-    background: #fff;
+    padding-top: 12px;
+    .nut-skeleton {
+      background-color: #fff;
+      padding: 12px;
+      box-sizing: border-box;
+    }
   }
 
   .loading,

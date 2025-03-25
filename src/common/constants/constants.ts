@@ -2,18 +2,20 @@ import { CouponBatchStatus } from "@/request/couponApi/typings.d"
 
 export const SuccessCode = 200
 export const WxMapApiKey = 'CPSBZ-IKTWZ-VQYX5-7Z62Q-5FZ45-OBFFG'
-export const GdMapApiKey = '69f9cef535c817b54549ce47311db813'
+export const GdMapApiKey = '95883d933e2f60323c0fa399ad4f6202'
 
 export enum Role {
-  AfterSale = 'support',
+  Support = 'support',
   Admin = 'admin',
   Finance = 'finance',
+  Quality = 'quality'
 }
 
 export const ROLES_INFO = {
-  [Role.AfterSale]: '售后',
+  [Role.Support]: '售后',
   [Role.Admin]: '管理员',
   [Role.Finance]: '财务',
+  [Role.Quality]: '质检员'
 }
 
 export enum CouponType {
