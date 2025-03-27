@@ -21,6 +21,8 @@ export interface TaskInfo {
   handler_name: string
   status: StatusInfo
   remark: string
+  sn: string
+  level: string
   create_time: string
   modify_time: string
 }

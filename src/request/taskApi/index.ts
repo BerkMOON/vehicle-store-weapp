@@ -69,6 +69,8 @@ export enum TaskStatus {
   Pending = 'pending',
   /** 已处理 */
   Processing = 'processing',
+  /** 待返厂 */
+  WaitingForReturn = 'waitingForReturn',
   /** 已完成 */
   Returned = 'returned',
   /** 已拒绝 */

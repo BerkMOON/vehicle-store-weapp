@@ -10,7 +10,8 @@ interface FollowPopupProps {
 }
 
 const statusOptions = [
-  { label: '已回厂', value: TaskStatus.Returned },
+  { label: '待返厂', value: TaskStatus.WaitingForReturn },
+  { label: '已返厂', value: TaskStatus.Returned },
   { label: '战败', value: TaskStatus.Rejected },
 ]
 

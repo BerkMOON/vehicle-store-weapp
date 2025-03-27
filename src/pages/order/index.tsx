@@ -10,10 +10,11 @@ import { TaskInfo } from '@/request/taskApi/typings'
 import FollowPopup from './components/FollowPopup'
 
 const tabs = [
-  { title: '待处理', value: TaskStatus.Pending },
-  { title: '处理中', value: TaskStatus.Processing },
+  { title: '待认领', value: TaskStatus.Pending },
+  { title: '已认领', value: TaskStatus.Processing },
+  { title: '待返厂', value: TaskStatus.WaitingForReturn },
   { title: '已返厂', value: TaskStatus.Returned },
-  { title: '已失效', value: TaskStatus.Rejected },
+  { title: '战败', value: TaskStatus.Rejected },
   { title: '全部', value: TaskStatus.All },
 ]
 
@@ -130,8 +131,12 @@ function Index() {
             <View className='value'>{order.report_time}</View>
           </View>
           <View className='content-row'>
+            <View className='label'>事故级别</View>
+            <View className='value'>{order.level}</View>
+          </View>
+          <View className='content-row'>
             <View className='label'>设备号</View>
-            <View className='value'>{order.device_id}</View>
+            <View className='value'>{order.sn}</View>
           </View>
           <View className='content-row'>
             <View className='label'>处理人</View>
@@ -153,11 +158,17 @@ function Index() {
           </Button>
           {
             order.status.code === TaskType.Pending ?
-              <Button size='small' color="#4e54c8" onClick={() => handleTransfer(order)}>
+              <Button size='small' color="#4e54c8" onClick={(e) => {
+                e.stopPropagation()
+                handleTransfer(order)
+              }}>
                 认领
               </Button> : null
           }
-          <Button size='small' color="#4e54c8" onClick={() => handleFollow(order)}>
+          <Button size='small' color="#4e54c8" onClick={(e) => {
+            e.stopPropagation()
+            handleFollow(order)
+          }}>
             跟进
           </Button>
         </View>

@@ -171,7 +171,8 @@ function OrderDetail() {
         <View className='section-title'>线索信息</View>
         <View className='follow-record'>
           <View>车架号：{orderInfo?.vin || '-'}</View>
-          <View>设备号：{orderInfo?.device_id}</View>
+          <View>设备号：{orderInfo?.sn}</View>
+          <View>事故级别：{orderInfo?.level}</View>
           <View>备注信息：{orderInfo?.remark || '-'}</View>
         </View>
       </View>
