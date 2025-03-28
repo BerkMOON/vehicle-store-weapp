@@ -8,6 +8,7 @@ import { TaskInfo } from '@/request/taskApi/typings'
 import Taro from '@tarojs/taro'
 import { MapAPI } from '@/request/mapApi'
 import FollowPopup from '../order/components/FollowPopup'
+import { SuccessCode } from '@/common/constants/constants'
 
 function OrderDetail() {
   const router = useRouter()
@@ -21,7 +22,7 @@ function OrderDetail() {
       const res = await TaskAPI.Detail(
         router.params.clueId || ''
       )
-      if (res?.response_status?.code === 200) {
+      if (res?.response_status?.code === SuccessCode) {
         setOrderInfo(res?.data)
 
         if (res?.data.gps?.lng && res?.data.gps?.lat) {
@@ -48,7 +49,7 @@ function OrderDetail() {
         task_id: order.id
       })
 
-      if (res?.response_status?.code === 200) {
+      if (res?.response_status?.code === SuccessCode) {
         Taro.showToast({
           title: '认领成功',
           icon: 'success'
@@ -77,7 +78,7 @@ function OrderDetail() {
         remark: values.remark
       })
 
-      if (res?.response_status?.code === 200) {
+      if (res?.response_status?.code === SuccessCode) {
         Taro.showToast({
           title: '跟进成功',
           icon: 'success'
@@ -129,7 +130,7 @@ function OrderDetail() {
       Taro.downloadFile({
         url: orderInfo.video_url,
         success: (res) => {
-          if (res.statusCode === 200) {
+          if (res.statusCode === SuccessCode) {
             console.log('视频预加载成功')
             setLocalVideoUrl(res.tempFilePath)
           }

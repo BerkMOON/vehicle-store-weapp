@@ -6,16 +6,18 @@ export const GdMapApiKey = '95883d933e2f60323c0fa399ad4f6202'
 
 export enum Role {
   Support = 'support',
+  SupportDirector = 'supportDirector',
   Admin = 'admin',
   Finance = 'finance',
-  Quality = 'quality'
+  // Quality = 'quality'
 }
 
 export const ROLES_INFO = {
-  [Role.Support]: '售后',
-  [Role.Admin]: '管理员',
+  [Role.Support]: '外拓专员',
+  [Role.SupportDirector]: '售后总监',
+  [Role.Admin]: '店长',
   [Role.Finance]: '财务',
-  [Role.Quality]: '质检员'
+  // [Role.Quality]: '质检员'
 }
 
 export enum CouponType {

@@ -32,6 +32,12 @@ function Index() {
     })
   }
 
+  const handleChangePassword = () => {
+    Taro.navigateTo({
+      url: '/package/pages/change-password/index'
+    })
+  }
+
   return (
     <GeneralPage>
       <View className="mine-page">
@@ -44,17 +50,17 @@ function Index() {
           />
           <View className="info">
             <View className="name">{userInfo?.nickname}</View>
-            <View className="role">{ROLES_INFO[userInfo?.role || Role.AfterSale]}</View>
+            <View className="role">{ROLES_INFO[userInfo?.role || Role.Support]}</View>
           </View>
         </View>
 
         <View className="action-list">
-          {/* <Button
+          <Button
             className="action-btn"
             onClick={handleChangePassword}
           >
             修改密码
-          </Button> */}
+          </Button>
           <Button
             className="action-btn logout-btn"
             onClick={handleLogout}

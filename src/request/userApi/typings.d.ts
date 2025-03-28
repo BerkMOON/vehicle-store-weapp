@@ -1,13 +1,6 @@
 import { Role } from "@/common/constants/constants"
 import { PageInfo } from "types/common"
 
-// b端登录 请求参数
-export interface LoginRequest {
-  username: string
-  password: string
-}
-
-// b端登录 返回结果
 export interface UserInfo {
   username: string
   header_img: string
@@ -93,6 +86,7 @@ export interface GetAllBusinessRoleResponse {
   role_list?: {
     role: string
     desc: string
+    name: string
   }[]
 }
 

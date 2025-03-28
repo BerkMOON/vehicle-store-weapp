@@ -31,7 +31,7 @@ function OrderSearch() {
         divider
         labelPosition="right"
         onFinish={(values) => submitSucceed(values)}
-        onFinishFailed={(values, errors) => submitFailed(errors)}
+        onFinishFailed={(_, errors) => submitFailed(errors)}
         footer={
           <div
             style={{

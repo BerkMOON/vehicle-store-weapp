@@ -3,6 +3,7 @@ import { Picker, PickerOption } from '@nutui/nutui-react-taro'
 import { useState, useEffect } from 'react'
 import { UserAPI } from '@/request/userApi'
 import './index.scss'
+import { SuccessCode } from '@/common/constants/constants'
 
 interface Props {
   value?: string
@@ -16,9 +17,9 @@ function RolePicker({ value, onChange }: Props) {
   const fetchRoleList = async () => {
     try {
       const res = await UserAPI.getAllBusinessRole()
-      if (res?.response_status.code === 200) {
+      if (res?.response_status.code === SuccessCode) {
         const list = res.data.role_list?.map(role => ({
-          text: role.desc || '',
+          text: role.name || '',
           value: role.role || ''
         })) || []
         setRoleList(list)

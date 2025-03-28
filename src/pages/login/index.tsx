@@ -3,10 +3,11 @@ import { Input, Button, Checkbox, Form } from '@nutui/nutui-react-taro'
 import { useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import './index.scss'
-import { UserAPI } from '@/request/userApi'
 import { useUserStore } from '@/store/user'
 import { initTab } from '@/utils/utils'
 import { useTabInfoStore } from '@/store/tabInfo'
+import { LoginAPI } from '@/request/loginApi'
+import { SuccessCode } from '@/common/constants/constants'
 
 function Login() {
   const [form] = Form.useForm()
@@ -19,12 +20,12 @@ function Login() {
         title: '登录中...'
       })
 
-      const response = await UserAPI.login({
+      const response = await LoginAPI.login({
         username: values.username,
         password: values.password,
       })
 
-      if (response.data.response_status.code === 200) {
+      if (response.data.response_status.code === SuccessCode) {
         if (response?.header['Set-Cookie']) {
           Taro.setStorageSync('cookies', response?.header['Set-Cookie'])
         }

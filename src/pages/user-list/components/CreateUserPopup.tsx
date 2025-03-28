@@ -3,6 +3,7 @@ import { Form, Input, Button, Popup } from '@nutui/nutui-react-taro'
 import { UserAPI } from '@/request/userApi'
 import Taro from '@tarojs/taro'
 import RolePicker from '@/components/RolePicker'
+import { SuccessCode } from '@/common/constants/constants'
 
 interface CreateUserPopupProps {
   visible: boolean
@@ -16,7 +17,7 @@ function CreateUserPopup({ visible, onClose, onSuccess }: CreateUserPopupProps) 
   const handleSubmit = async (values) => {
     try {
       const res = await UserAPI.register(values)
-      if (res?.response_status.code === 200) {
+      if (res?.response_status.code === SuccessCode) {
         Taro.showToast({
           title: '创建成功',
           icon: 'success'

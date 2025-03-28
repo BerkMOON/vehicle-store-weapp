@@ -1,0 +1,15 @@
+.change-password {
+  padding: 20px;
+  --nutui-color-primary: red;
+
+  .form-actions {
+    margin-top: 40px;
+  }
+
+  .form-password {
+    display: flex;
+    align-items: center;
+    background: "#fff";
+    padding: 0 10px;
+  }
+}

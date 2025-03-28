@@ -19,6 +19,12 @@ export default defineAppConfig({
       pages: [
         'pages/index/index'
       ]
+    },
+    {
+      root: 'package',
+      pages: [
+        'pages/change-password/index'
+      ]
     }
   ],
   tabBar: {

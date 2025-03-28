@@ -8,6 +8,7 @@ import { TaskAPI, TaskStatus, TaskType } from '@/request/taskApi'
 import { useRef, useState } from 'react'
 import { TaskInfo } from '@/request/taskApi/typings'
 import FollowPopup from './components/FollowPopup'
+import { SuccessCode } from '@/common/constants/constants'
 
 const tabs = [
   { title: '待认领', value: TaskStatus.Pending },
@@ -49,7 +50,7 @@ function Index() {
         task_id: order.id
       })
 
-      if (res?.response_status?.code === 200) {
+      if (res?.response_status?.code === SuccessCode) {
         Taro.showToast({
           title: '认领成功',
           icon: 'success'
@@ -87,7 +88,7 @@ function Index() {
         remark: values.remark
       })
 
-      if (res?.response_status?.code === 200) {
+      if (res?.response_status?.code === SuccessCode) {
         Taro.showToast({
           title: '跟进成功',
           icon: 'success'

@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro'
 import { useState, useEffect, useRef } from 'react'
 import { MessageType, QualityMessage, DeviceInfo, CheckResult } from './types'
 import './index.scss'
+import { SuccessCode } from '@/common/constants/constants'
 
 function QualityCheck() {
   const [checking, setChecking] = useState(false)
@@ -55,7 +56,7 @@ function QualityCheck() {
 
       const { code, data, message } = res.data
 
-      if (code === 200) {
+      if (code === SuccessCode) {
         handleStatusData(data)
       } else {
         Taro.showToast({
@@ -114,7 +115,7 @@ function QualityCheck() {
           }
         })
 
-        if (checkRes.data.code === 200) {
+        if (checkRes.data.code === SuccessCode) {
           startPolling(res.result)
         } else {
           Taro.showToast({
