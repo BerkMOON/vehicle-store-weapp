@@ -14,12 +14,12 @@
         color: #666;
         margin-bottom: 8px;
         word-break: break-all;
-        
+
         .label {
           color: #999;
           margin-right: 8px;
         }
-        
+
         .value {
           color: #333;
           font-weight: 500;
@@ -40,7 +40,7 @@
         color: #999;
         margin-right: 8px;
       }
-      
+
       .status {
         display: inline-block;
         padding: 4px 12px;
@@ -123,7 +123,6 @@
   }
 }
 
-
 .video-section {
   position: relative;
   width: 100%;
@@ -151,7 +150,7 @@
     font-size: 14px;
 
     &::before {
-      content: '';
+      content: "";
       width: 24px;
       height: 24px;
       margin-right: 8px;
@@ -166,5 +165,14 @@
 @keyframes loading {
   to {
     transform: rotate(360deg);
+  }
+}
+
+.copy-item {
+  display: flex;
+  align-items: center;
+
+  .copy-icon {
+    margin-left: 8px;
   }
 }

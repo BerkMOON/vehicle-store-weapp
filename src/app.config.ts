@@ -15,12 +15,6 @@ export default defineAppConfig({
   ],
   subPackages: [
     {
-      root: 'packageQuality',
-      pages: [
-        'pages/index/index'
-      ]
-    },
-    {
       root: 'package',
       pages: [
         'pages/change-password/index'

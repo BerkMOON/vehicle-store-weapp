@@ -9,6 +9,7 @@ import Taro from '@tarojs/taro'
 import { MapAPI } from '@/request/mapApi'
 import FollowPopup from '../order/components/FollowPopup'
 import { SuccessCode } from '@/common/constants/constants'
+import { Copy } from '@nutui/icons-react-taro'
 
 function OrderDetail() {
   const router = useRouter()
@@ -171,8 +172,44 @@ function OrderDetail() {
       <View className='section'>
         <View className='section-title'>线索信息</View>
         <View className='follow-record'>
-          <View>车架号：{orderInfo?.vin || '-'}</View>
-          <View>设备号：{orderInfo?.sn}</View>
+          <View className='copy-item'>
+            <Text>车架号：{orderInfo?.vin || '-'}</Text>
+            {orderInfo?.vin && (
+              <Copy
+                className='copy-icon'
+                onClick={() => {
+                  Taro.setClipboardData({
+                    data: orderInfo.vin,
+                    success: () => {
+                      Taro.showToast({
+                        title: '车架号已复制',
+                        icon: 'success'
+                      })
+                    }
+                  })
+                }}
+              />
+            )}
+          </View>
+          <View className='copy-item'>
+            <Text>设备号：{orderInfo?.sn}</Text>
+            {orderInfo?.sn && (
+              <Copy
+                className='copy-icon'
+                onClick={() => {
+                  Taro.setClipboardData({
+                    data: orderInfo.sn,
+                    success: () => {
+                      Taro.showToast({
+                        title: '设备号已复制',
+                        icon: 'success'
+                      })
+                    }
+                  })
+                }}
+              />
+            )}
+          </View>
           <View>事故级别：{orderInfo?.level}</View>
           <View>备注信息：{orderInfo?.remark || '-'}</View>
         </View>

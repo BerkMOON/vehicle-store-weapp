@@ -14,7 +14,8 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "uglifyFileName": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.7.8",
