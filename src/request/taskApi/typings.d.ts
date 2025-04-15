@@ -12,6 +12,7 @@ export interface TaskInfo {
   clue_id: string
   device_id: string
   vin: string
+  phone: string
   gps: {
     lat: string;
     lng: string;

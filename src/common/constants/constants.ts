@@ -9,7 +9,6 @@ export enum Role {
   SupportDirector = 'supportDirector',
   Admin = 'admin',
   Finance = 'finance',
-  // Quality = 'quality'
 }
 
 export const ROLES_INFO = {
@@ -17,7 +16,6 @@ export const ROLES_INFO = {
   [Role.SupportDirector]: '售后总监',
   [Role.Admin]: '店长',
   [Role.Finance]: '财务',
-  // [Role.Quality]: '质检员'
 }
 
 export enum CouponType {

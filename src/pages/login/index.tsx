@@ -83,7 +83,7 @@ function Login() {
       </View>
 
       <View className='login-form'>
-        <Form 
+        <Form
           form={form}
           onFinish={onFinish}
           footer={

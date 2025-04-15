@@ -9,7 +9,7 @@ import Taro from '@tarojs/taro'
 import { MapAPI } from '@/request/mapApi'
 import FollowPopup from '../order/components/FollowPopup'
 import { SuccessCode } from '@/common/constants/constants'
-import { Copy } from '@nutui/icons-react-taro'
+import { Copy, Phone } from '@nutui/icons-react-taro'
 
 function OrderDetail() {
   const router = useRouter()
@@ -210,6 +210,20 @@ function OrderDetail() {
               />
             )}
           </View>
+          {orderInfo?.phone && (
+            <View className='copy-item'>
+              <Text>用户手机号：{orderInfo?.phone}</Text>
+              <Phone
+                size={18}
+                className='copy-icon'
+                onClick={() => {
+                  Taro.makePhoneCall({
+                    phoneNumber: orderInfo.phone,
+                  })
+                }}
+              />
+            </View>
+          )}
           <View>事故级别：{orderInfo?.level}</View>
           <View>备注信息：{orderInfo?.remark || '-'}</View>
         </View>
