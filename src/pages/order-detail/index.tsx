@@ -9,12 +9,11 @@ import Taro from '@tarojs/taro'
 import { MapAPI } from '@/request/mapApi'
 import FollowPopup from '../order/components/FollowPopup'
 import { SuccessCode } from '@/common/constants/constants'
-import { Copy, Phone } from '@nutui/icons-react-taro'
+import { Copy, Phone, PlayStart } from '@nutui/icons-react-taro'
 
 function OrderDetail() {
   const router = useRouter()
   const [orderInfo, setOrderInfo] = useState<TaskInfo>()
-  const [localVideoUrl, setLocalVideoUrl] = useState<string>('')
   const [addressInfo, setAddressInfo] = useState<string>('')
   const [showFollow, setShowFollow] = useState(false)
 
@@ -126,23 +125,6 @@ function OrderDetail() {
     })
   }
 
-  useEffect(() => {
-    if (orderInfo?.video_url) {
-      Taro.downloadFile({
-        url: orderInfo.video_url,
-        success: (res) => {
-          if (res.statusCode === SuccessCode) {
-            console.log('视频预加载成功')
-            setLocalVideoUrl(res.tempFilePath)
-          }
-        },
-        fail: (err) => {
-          console.error('视频预加载失败:', err)
-        }
-      })
-    }
-  }, [orderInfo?.video_url])
-
   return (
     <View className='order-detail'>
       {/* 头部信息 */}
@@ -245,20 +227,15 @@ function OrderDetail() {
       {/* 视频详情 */}
       <View className='section'>
         <View className='section-title'>视频详情</View>
-        <View className='video-section'>
-          {localVideoUrl ? (
-            <Video
-              src={localVideoUrl}
-              controls
-              showFullscreenBtn
-              showPlayBtn
-              showCenterPlayBtn
-              enableProgressGesture
-              className='video'
-            />
-          ) : (
-            <View className='loading'>视频加载中...</View>
-          )}
+        <View className='video-section' onClick={() => {
+          Taro.previewMedia({
+            sources: [{
+              url: orderInfo?.video_url || '',
+              type: 'video',
+            }]
+          })
+        }}>
+          <PlayStart size={40} />
         </View>
       </View>
 

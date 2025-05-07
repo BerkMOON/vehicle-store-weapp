@@ -25,7 +25,11 @@ export const supportTabList = [
 ]
 
 export const adminTabList = [
-
+  {
+    pagePath: '/pages/order/index',
+    text: '工单列表',
+    icon: <Agenda size={18} />
+  },
   {
     pagePath: '/pages/coupon-review/index',
     text: '优惠券审核',
@@ -66,7 +70,7 @@ function CustomTabBar() {
 
   useEffect(() => {
     const role = userInfo?.role
-    const tabList = role === Role.Support ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
+    const tabList = (role === Role.Support || role === Role.SupportDirector) ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
     setTabList(tabList)
     if (!tabInfo) {
       setTabInfo(tabList[0])

@@ -6,7 +6,7 @@ export const GdMapApiKey = '95883d933e2f60323c0fa399ad4f6202'
 
 export enum Role {
   Support = 'support',
-  SupportDirector = 'supportDirector',
+  SupportDirector = 'support_director',
   Admin = 'admin',
   Finance = 'finance',
 }

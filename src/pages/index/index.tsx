@@ -7,6 +7,7 @@ function Home() {
 
   return (
     <View className='home'>
+      <div style={{ color: '#fff' }}>加载中...</div>
     </View>
   )
 }

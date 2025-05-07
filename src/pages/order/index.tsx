@@ -154,7 +154,10 @@ function Index() {
         </View>
 
         <View className='order-footer'>
-          <Button size='small' onClick={() => handleViewDetail(order.clue_id)}>
+          <Button size='small' onClick={(e) => {
+            e.stopPropagation()
+            handleViewDetail(order.clue_id)
+          }}>
             查看详情
           </Button>
           {
