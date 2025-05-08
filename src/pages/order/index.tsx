@@ -140,6 +140,10 @@ function Index() {
             <View className='value'>{order.sn}</View>
           </View>
           <View className='content-row'>
+            <View className='label'>车辆型号</View>
+            <View className='value'>{order?.brand ? `${order?.brand}-${order?.car_model}` : '暂无'}</View>
+          </View>
+          <View className='content-row'>
             <View className='label'>处理人</View>
             <View className='value'>{order.handler_name}</View>
           </View>

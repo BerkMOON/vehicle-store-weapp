@@ -17,6 +17,8 @@ export interface TaskInfo {
     lat: string;
     lng: string;
   }
+  car_model: string
+  brand: string
   report_time: string
   video_url: string
   handler_name: string

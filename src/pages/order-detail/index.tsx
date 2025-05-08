@@ -207,6 +207,7 @@ function OrderDetail() {
             </View>
           )}
           <View>事故级别：{orderInfo?.level}</View>
+          <View>车辆型号：{ orderInfo?.brand ? `${orderInfo?.brand}-${orderInfo?.car_model}` : '暂无'}</View>
           <View>备注信息：{orderInfo?.remark || '-'}</View>
         </View>
       </View>

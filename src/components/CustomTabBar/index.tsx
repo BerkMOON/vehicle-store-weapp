@@ -70,7 +70,7 @@ function CustomTabBar() {
 
   useEffect(() => {
     const role = userInfo?.role
-    const tabList = (role === Role.Support || role === Role.SupportDirector) ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
+    const tabList = (role === Role.Support || role === Role.SupportDirector || role === Role.SupportManager) ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
     setTabList(tabList)
     if (!tabInfo) {
       setTabInfo(tabList[0])

@@ -9,11 +9,13 @@ export enum Role {
   SupportDirector = 'support_director',
   Admin = 'admin',
   Finance = 'finance',
+  SupportManager ='customer_service_manager'
 }
 
 export const ROLES_INFO = {
   [Role.Support]: '外拓专员',
   [Role.SupportDirector]: '售后总监',
+  [Role.SupportManager]: '客服经理',
   [Role.Admin]: '店长',
   [Role.Finance]: '财务',
 }

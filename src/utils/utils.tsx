@@ -6,6 +6,7 @@ export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
   switch (role) {
     case Role.Support:
     case Role.SupportDirector:
+    case Role.SupportManager:
       setTabInfo(supportTabList[0])
       handleLoginSuccess(supportTabList[0].pagePath)
       break
@@ -26,7 +27,7 @@ export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
 
 export const handleLoginSuccess = (defaultPath: string) => {
   const lastPage = Taro.getStorageSync('lastPage')
-  if (lastPage) {
+  if (lastPage && lastPage !== '/pages/index/index') {
     Taro.removeStorageSync('lastPage')
     Taro.reLaunch({
       url: lastPage
