@@ -12,6 +12,7 @@ export default defineAppConfig({
     'pages/coupon-review/detail/index',
     'pages/finance/index',
     'pages/user-list/index',
+    'pages/device-stat/index'
   ],
   subPackages: [
     {
@@ -41,8 +42,8 @@ export default defineAppConfig({
         text: '我的',
       },
       {
-        pagePath: 'pages/coupon-review/index',
-        text: '优惠券审核'
+        pagePath: 'pages/device-stat/index',
+        text: '设备统计'
       },
       {
         pagePath: 'pages/finance/index',

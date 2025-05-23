@@ -21,3 +21,12 @@ export interface StatusInfo {
   code: number
   name: string
 }
+
+export interface BaseListInfo {
+  meta: PageInfo;
+}
+
+export interface PageInfoParams {
+  page: number;
+  limit: number;
+}

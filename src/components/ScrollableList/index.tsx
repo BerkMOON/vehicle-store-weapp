@@ -36,7 +36,7 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
       const currentPage = isLoadMore ? page : 1
       const list = await fetchData(currentPage)
 
-      if (list.length < pageSize) {
+      if (list.length <= pageSize) {
         setHasMore(false)
       }
       setData(prev => isLoadMore ? [...prev, ...list] : list)

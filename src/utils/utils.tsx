@@ -1,28 +1,11 @@
 import { Role } from "@/common/constants/constants"
-import { supportTabList, financeTabList, adminTabList } from "@/components/CustomTabBar"
+import { supportTabList, financeTabList, adminTabList, supportManageTabList } from "@/components/CustomTabBar"
 import Taro from "@tarojs/taro"
 
 export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
-  switch (role) {
-    case Role.Support:
-    case Role.SupportDirector:
-    case Role.SupportManager:
-      setTabInfo(supportTabList[0])
-      handleLoginSuccess(supportTabList[0].pagePath)
-      break
-    case Role.Admin:
-      setTabInfo(adminTabList[0])
-      handleLoginSuccess(adminTabList[0].pagePath)
-      break
-    case Role.Finance:
-      setTabInfo(financeTabList[0])
-      handleLoginSuccess(financeTabList[0].pagePath)
-      break
-    default:
-      setTabInfo(supportTabList[0])
-      handleLoginSuccess(supportTabList[0].pagePath)
-      break
-  }
+  const tabInfo = getTab(role)[0]
+  setTabInfo(tabInfo)
+  handleLoginSuccess(tabInfo.pagePath)
 }
 
 export const handleLoginSuccess = (defaultPath: string) => {
@@ -37,5 +20,21 @@ export const handleLoginSuccess = (defaultPath: string) => {
     Taro.reLaunch({
       url: defaultPath
     })
+  }
+}
+
+export const getTab = (role: Role) => {
+  switch (role) {
+    case Role.Support:
+    case Role.SupportDirector:
+      return supportTabList
+    case Role.Admin:
+      return adminTabList
+    case Role.Finance:
+      return financeTabList
+    case Role.SupportManager:
+      return supportManageTabList
+    default:
+      return supportTabList
   }
 }

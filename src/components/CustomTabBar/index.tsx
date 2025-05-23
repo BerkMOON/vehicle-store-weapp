@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
 import { Role } from '@/common/constants/constants'
 import { useUserStore } from '@/store/user'
+import { getTab } from '@/utils/utils'
 
 export const supportTabList = [
   {
@@ -24,16 +25,34 @@ export const supportTabList = [
   }
 ]
 
-export const adminTabList = [
+export const supportManageTabList = [
+  {
+    pagePath: '/pages/device-stat/index',
+    text: '设备统计',
+    icon: <Agenda size={18} />
+  },
   {
     pagePath: '/pages/order/index',
     text: '工单列表',
     icon: <Agenda size={18} />
   },
   {
-    pagePath: '/pages/coupon-review/index',
-    text: '优惠券审核',
-    icon: <Find size={18} />
+    pagePath: '/pages/mine/index',
+    text: '我的',
+    icon: <User size={18} />
+  }
+]
+
+export const adminTabList = [
+  {
+    pagePath: '/pages/device-stat/index',
+    text: '设备统计',
+    icon: <Agenda size={18} />
+  },
+  {
+    pagePath: '/pages/order/index',
+    text: '工单列表',
+    icon: <Agenda size={18} />
   },
   {
     pagePath: '/pages/user-list/index',
@@ -70,7 +89,7 @@ function CustomTabBar() {
 
   useEffect(() => {
     const role = userInfo?.role
-    const tabList = (role === Role.Support || role === Role.SupportDirector || role === Role.SupportManager) ? supportTabList : role === Role.Admin ? adminTabList : financeTabList
+    const tabList = getTab(role as Role)
     setTabList(tabList)
     if (!tabInfo) {
       setTabInfo(tabList[0])
