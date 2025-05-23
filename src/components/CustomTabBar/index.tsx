@@ -26,14 +26,14 @@ export const supportTabList = [
 
 export const adminTabList = [
   {
-    pagePath: '/pages/order/index',
-    text: '工单列表',
+    pagePath: '/pages/device-stat/index',
+    text: '设备统计',
     icon: <Agenda size={18} />
   },
   {
-    pagePath: '/pages/coupon-review/index',
-    text: '优惠券审核',
-    icon: <Find size={18} />
+    pagePath: '/pages/order/index',
+    text: '工单列表',
+    icon: <Agenda size={18} />
   },
   {
     pagePath: '/pages/user-list/index',
