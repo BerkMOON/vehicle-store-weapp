@@ -1,16 +1,18 @@
 import { ScrollView, View } from '@tarojs/components'
 import { Empty, Skeleton } from '@nutui/nutui-react-taro'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import emptyImg from '@/assets/empty.png'
 import './index.scss'
+import Taro from '@tarojs/taro'
 
 interface ScrollableListProps<T> {
-  fetchData: (page: number) => Promise<T[]>
+  fetchData: (page: number, fetchParams?: Record<string, any>) => Promise<T[]>
   renderItem: (item: T) => JSX.Element
   emptyText?: string
   pageSize?: number
   autoLoad?: boolean
   className?: string
+  fetchParams?: Record<string, any>
 }
 
 const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
@@ -20,23 +22,26 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
     emptyText = '暂无数据',
     pageSize = 10,
     autoLoad = true,
-    className = ''
+    className = '',
+    fetchParams
   } = props
-
+  const scrollViewRef = useRef<any>(null);
   const [loading, setLoading] = useState(false)
   const [isSkeletonShow, setIsSkeletonShow] = useState(true)
   const [data, setData] = useState<T[]>([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
 
-  const handleFetch = async (isLoadMore = false) => {
+  const handleFetch = async (isLoadMore = false, extraFetchParams?: Record<string, any>) => {
     if (loading || (isLoadMore && !hasMore)) return
     setLoading(true)
     try {
       const currentPage = isLoadMore ? page : 1
-      const list = await fetchData(currentPage)
+      const list = await fetchData(currentPage, {
+        ...extraFetchParams
+      })
 
-      if (list.length <= pageSize) {
+      if (list.length < pageSize) {
         setHasMore(false)
       }
       setData(prev => isLoadMore ? [...prev, ...list] : list)
@@ -51,21 +56,38 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
 
   const onScrollToLower = () => {
     if (!hasMore || loading) return
-    handleFetch(true)
+    handleFetch(true, fetchParams)
+  }
+
+  const srollToTop = () => {
+    Taro.createSelectorQuery()
+    .select('#scrollview')
+    .node()
+    .exec((res) => {
+      const scrollView = res[0].node;
+      scrollView.scrollTo({
+        top: 0,
+      });
+    })
   }
 
   useEffect(() => {
     if (autoLoad) {
-      handleFetch()
+      srollToTop()
+      setPage(1)
+      setData([])
+      setHasMore(true)
+      setIsSkeletonShow(true)
+      handleFetch(false, fetchParams)
     }
-  }, [])
+  }, [fetchParams])
 
   const refresh = () => {
-    setData([])
     setPage(1)
+    setData([])
     setHasMore(true)
     setIsSkeletonShow(true)
-    handleFetch()
+    handleFetch(false, fetchParams)
   }
 
   useImperativeHandle(ref, () => ({
@@ -74,6 +96,8 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
 
   return (
     <ScrollView
+      id="scrollview"
+      enhanced
       scrollY
       className={`scrollable-list ${className}`}
       onScrollToLower={onScrollToLower}

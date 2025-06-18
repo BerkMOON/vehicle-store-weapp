@@ -1,14 +1,24 @@
 import { View } from '@tarojs/components'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DeviceAPI } from '@/request/deviceApi'
 import { DeviceList, StatResponse } from '@/request/deviceApi/typings'
 import { SuccessCode } from '@/common/constants/constants'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'
 import ScrollableList from '@/components/ScrollableList'
+import { Download } from '@nutui/icons-react-taro'
+import { createXlsxFile } from '@/utils/downloadXlsx'
+import { fetchAllPaginatedData } from '@/utils/request'
+import Taro from '@tarojs/taro'
+import { Button, Divider } from '@nutui/nutui-react-taro'
+import dayjs from 'dayjs'
+import { StateTypeEnum, StateTypeMap, DeviceStatParamsMap, StatKeyAndNamesMap, StatInfoList } from './constants'
 
 function DeviceStat() {
   const [statInfo, setStatInfo] = useState<StatResponse>()
+  const scrollRef = useRef<{ refresh: () => void }>()
+  const [stateType, setStateType] = useState<StateTypeEnum>(StateTypeEnum.NotBoundAndReported);
+  const [fetchParams, setFetchParams] = useState<any>({ report_status: 'reported', status: 'init' });
 
   const fetchStatInfo = async () => {
     try {
@@ -22,24 +32,29 @@ function DeviceStat() {
     }
   }
 
-  const fetchDeviceList = async (page) => {
+  const fetchDeviceList = async (page, extraParmas) => {
     try {
       const params = {
         page,
         limit: 10,
-        report_status: 'reported',
-        status: 'init'
-      }
+        ...extraParmas
+      };
 
-      const res = await DeviceAPI.list(params)
+      const res = await DeviceAPI.list(params);
       if (res?.response_status?.code === SuccessCode) {
-        return res.data.device_list || []
+        return res.data.device_list || [];
       }
-      return []
+      return [];
     } catch (error) {
-      console.error('获取设备列表失败:', error)
-      return []
+      console.error('获取设备列表失败:', error);
+      return [];
     }
+  };
+
+  const switchInfo = (type: StateTypeEnum) => {
+    setStateType(type);
+    // 假设根据不同的 stateType 设置不同的 report_status 和 status
+    setFetchParams(DeviceStatParamsMap[type]);
   }
 
   const renderItem = (item: DeviceList) => {
@@ -50,7 +65,7 @@ function DeviceStat() {
           <View className='status'>{item.status.name}</View>
         </View>
         <View className='item-content'>
-        <View className='info-row'>
+          <View className='info-row'>
             <View className='label'>门店</View>
             <View className='value'>{item.store_name || '-'}</View>
           </View>
@@ -67,57 +82,84 @@ function DeviceStat() {
     fetchStatInfo()
   }, [])
 
+  const downloadXlsx = async (type: StateTypeEnum) => {
+    Taro.showLoading({
+      title: '下载中...'
+    })
+    try {
+      const data = await fetchAllPaginatedData(DeviceAPI.list, DeviceStatParamsMap[type], {
+        responseKey: 'device_list',
+        pageSize: 100,
+      })
+
+      if (data.length > 0) {
+        createXlsxFile({
+          data,
+          fileName: `${StateTypeMap[type]}设备列表截止${dayjs().format('M月D日')}`,
+          keyAndNames: StatKeyAndNamesMap[type],
+        })
+        Taro.hideLoading()
+      } else {
+        Taro.hideLoading()
+        Taro.showToast({
+          title: '暂无数据',
+          icon: 'none'
+        })
+      }
+    } catch (error) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: '下载失败',
+        icon: 'none'
+      })
+      console.error('下载失败:', error)
+    }
+  }
+
   return (
     <GeneralPage>
       <View className='page'>
         <View className='device-stat'>
           <View className='stat-card'>
             <View className='stat-content'>
-              <View className='stat-row'>
-                <View className='stat-item'>
-                  <View className='label'>总设备数</View>
-                  <View className='value highlight'>{statInfo?.total || 0}</View>
-                </View>
-                <View className='stat-item'>
-                  <View className='label'>已绑定设备</View>
-                  <View className='value'>{statInfo?.bound || 0}</View>
-                </View>
-                <View className='stat-item'>
-                  <View className='label'>未绑定设备</View>
-                  <View className='value'>{statInfo?.not_bound || 0}</View>
-                </View>
-              </View>
-              <View className='divider' />
-              <View className='stat-row'>
-                <View className='stat-item'>
-                  <View className='label'>上路设备</View>
-                  <View className='value'>{statInfo?.reported_in_bound || 0}</View>
-                </View>
-                <View className='stat-item'>
-                  <View className='label'>未安装已绑定</View>
-                  <View className='value'>{statInfo?.unreported_in_bound || 0}</View>
-                </View>
-              </View>
-              <View className='stat-row'>
-                <View className='stat-item'>
-                  <View className='label'>已安装未绑定</View>
-                  <View className='value'>{statInfo?.reported_in_not_bound || 0}</View>
-                </View>
-                <View className='stat-item'>
-                  <View className='label'>库存设备</View>
-                  <View className='value'>{statInfo?.unreported_in_not_bound || 0}</View>
-                </View>
-              </View>
+              {
+                StatInfoList.map((list, index) => (
+                  <>
+                    <View className='stat-row' key={index}>
+                      {
+                        list.map(item => (
+                          <View className={`stat-item ${stateType === item.state ? 'active' : ''}`} onClick={() => switchInfo(item.state)} key={item.state}>
+                            <View className='label' >{item.title}</View>
+                            <View className='value'>{statInfo?.[item.key] || 0}</View>
+                          </View>
+                        ))
+                      }
+                    </View>
+                    {
+                      index !== StatInfoList.length - 1 && (
+                        <Divider />
+                      )
+                    }
+                  </>
+                ))
+              }
             </View>
           </View>
         </View>
 
-        <View className='list-title'>已安装未绑定设备列表</View>
+        <View className='list-title'>
+          {StateTypeMap[stateType]}设备列表
+          <Button color="#4e54c8" className='download-icon' onClick={() => downloadXlsx(stateType)}>
+            导出 <Download />
+          </Button>
+        </View>
         <ScrollableList
+          ref={scrollRef}
           className='device-list'
           fetchData={fetchDeviceList}
+          fetchParams={fetchParams}
           renderItem={renderItem}
-          emptyText='暂无已安装未绑定设备'
+          emptyText={`暂无${StateTypeMap[stateType]}设备`}
         />
       </View>
     </GeneralPage>

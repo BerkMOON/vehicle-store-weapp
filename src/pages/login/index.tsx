@@ -41,7 +41,7 @@ function Login() {
         } else {
           Taro.removeStorageSync('loginInfo')
         }
-
+        Taro.hideLoading()
         Taro.showToast({
           title: '登录成功',
           icon: 'success'
@@ -49,6 +49,7 @@ function Login() {
 
         initTab(userInfo.role, setTabInfo)
       } else {
+        Taro.hideLoading()
         Taro.showToast({
           title: response.data.response_status.msg || '登录失败',
           icon: 'error'
@@ -56,12 +57,11 @@ function Login() {
       }
     } catch (error) {
       console.error('登录错误：', error)
+      Taro.hideLoading()
       Taro.showToast({
         title: '网络错误，请重试',
         icon: 'error'
       })
-    } finally {
-      Taro.hideLoading()
     }
   }
 
