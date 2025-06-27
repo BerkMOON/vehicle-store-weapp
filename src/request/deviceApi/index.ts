@@ -2,6 +2,8 @@ import { ResponseInfoType } from "types/common"
 import {
   DeviceRequest,
   DeviceResponse,
+  LossRequest,
+  LossResponse,
   StatResponse,
 } from './typings.d'
 import { getRequest } from ".."
@@ -28,6 +30,18 @@ export const DeviceAPI = {
    */
   list: (params: DeviceRequest) => getRequest<ResponseInfoType<DeviceResponse>>({
     url: `${prefix}/list`,
+    params
+  }),
+
+
+  /**
+   * 流失提醒-店端
+   * GET /api/business/device/getLossNotifications
+   * 接口ID：314228471
+   * 接口地址：https://app.apifox.com/link/project/5084807/apis/api-314228471
+   */
+  getLossNotifications: (params: LossRequest) => getRequest<ResponseInfoType<LossResponse>>({
+    url: `${prefix}/getLossNotifications`,
     params
   }),
 }

@@ -13,15 +13,15 @@ export const StateTypeMap = {
   [StateTypeEnum.NotBound]: '未绑定',
   [StateTypeEnum.Bound]: '已绑定',
   [StateTypeEnum.BoundAndReported]: '上路设备',
-  [StateTypeEnum.BoundAndNotReported]: '已安装未绑定',
-  [StateTypeEnum.NotBoundAndReported]: '未安装已绑定',
+  [StateTypeEnum.BoundAndNotReported]:  '未安装已绑定',
+  [StateTypeEnum.NotBoundAndReported]: '已安装未绑定',
   [StateTypeEnum.NotBoundAndNotReported]: '库存设备',
 }
 
 export const DeviceStatParamsMap = {
   [StateTypeEnum.All]: {},
-  [StateTypeEnum.NotBound]: { status: 'bound' },
-  [StateTypeEnum.Bound]: { status: 'init' },
+  [StateTypeEnum.NotBound]: { status: 'init' },
+  [StateTypeEnum.Bound]: { status: 'bound' },
   [StateTypeEnum.BoundAndReported]: { report_status: 'reported', status: 'bound' },
   [StateTypeEnum.BoundAndNotReported]: { report_status: 'unreported', status: 'bound' },
   [StateTypeEnum.NotBoundAndReported]: { report_status: 'reported', status: 'init' },
@@ -40,6 +40,9 @@ const BoundNameMap = [{
 }, {
   key: 'phone',
   name: '手机号'
+}, {
+  key: 'vin',
+  name: '车架号'
 }, {
   key: 'bind_time',
   name: '绑定时间'

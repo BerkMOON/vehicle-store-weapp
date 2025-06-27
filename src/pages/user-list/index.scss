@@ -14,42 +14,6 @@
     }
   }
 
-  .search-form {
-    padding: 16px;
-    background: #fff;
-
-    .basic-search {
-      display: flex;
-      gap: 12px;
-      
-      .search-item {
-        flex: 1;
-        margin: 0;
-      }
-    }
-
-    .advanced-search {
-      margin-top: 16px;
-      
-      .search-item {
-        margin-bottom: 12px;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-        margin-top: 16px;
-      }
-    }
-  }
-
-  .operation-bar {
-    padding: 16px;
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .user-item {
     margin: 0px 8px 12px;
     padding: 16px;

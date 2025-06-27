@@ -12,7 +12,8 @@ export default defineAppConfig({
     'pages/coupon-review/detail/index',
     'pages/finance/index',
     'pages/user-list/index',
-    'pages/device-stat/index'
+    'pages/device-stat/index',
+    'pages/lost-reminder/index'
   ],
   subPackages: [
     {
@@ -48,6 +49,10 @@ export default defineAppConfig({
       {
         pagePath: 'pages/finance/index',
         text: '优惠券结算'
+      },
+      {
+        pagePath: 'pages/lost-reminder/index',
+        text: '流失提醒'
       }
     ]
   },

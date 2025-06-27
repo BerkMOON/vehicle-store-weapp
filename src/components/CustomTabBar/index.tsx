@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { Tabbar } from '@nutui/nutui-react-taro'
-import { Agenda, Coupon, Find, People, User } from '@nutui/icons-react-taro'
+import { Agenda, BellUnread, Calculator, Coupon, Find, People, User } from '@nutui/icons-react-taro'
 import { useState, useEffect } from 'react'
 import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
 import { Role } from '@/common/constants/constants'
@@ -47,12 +47,17 @@ export const adminTabList = [
   {
     pagePath: '/pages/device-stat/index',
     text: '设备统计',
-    icon: <Agenda size={18} />
+    icon: <Calculator size={18} />
   },
   {
     pagePath: '/pages/order/index',
     text: '工单列表',
     icon: <Agenda size={18} />
+  },
+  {
+    pagePath: '/pages/lost-reminder/index',
+    text: '流失提醒',
+    icon: <BellUnread size={18} />
   },
   {
     pagePath: '/pages/user-list/index',

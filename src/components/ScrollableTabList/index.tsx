@@ -1,5 +1,5 @@
 import { ScrollView, View } from '@tarojs/components'
-import { Empty, Skeleton, Tabs } from '@nutui/nutui-react-taro'
+import { BackTop, Empty, Skeleton, Tabs } from '@nutui/nutui-react-taro'
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import emptyImg from '@/assets/empty.png'
 import './index.scss'

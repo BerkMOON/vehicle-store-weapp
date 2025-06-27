@@ -25,7 +25,6 @@ const ScrollableList = forwardRef(<T,>(props: ScrollableListProps<T>, ref) => {
     className = '',
     fetchParams
   } = props
-  const scrollViewRef = useRef<any>(null);
   const [loading, setLoading] = useState(false)
   const [isSkeletonShow, setIsSkeletonShow] = useState(true)
   const [data, setData] = useState<T[]>([])

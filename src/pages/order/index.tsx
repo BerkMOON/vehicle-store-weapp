@@ -1,5 +1,5 @@
 import { Text, View } from '@tarojs/components'
-import { Button } from '@nutui/nutui-react-taro'
+import { BackTop, Button } from '@nutui/nutui-react-taro'
 import Taro, { useDidShow } from '@tarojs/taro'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'

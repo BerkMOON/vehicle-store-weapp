@@ -24,7 +24,7 @@ export const createXlsxFile = (params: { data: any[], fileName: string, keyAndNa
   const wb = XLSX.utils.book_new()
   const ws = XLSX.utils.json_to_sheet(filteredData)
 
-  const colWidth = 20;
+  const colWidth = 25;
   ws['!cols'] = filteredData 
     ? Object.keys(filteredData).map(() => ({ wch: colWidth }))
     : [];

@@ -69,10 +69,24 @@ function DeviceStat() {
             <View className='label'>门店</View>
             <View className='value'>{item.store_name || '-'}</View>
           </View>
-          <View className='info-row'>
-            <View className='label'>安装时间</View>
-            <View className='value'>{item.onset_time}</View>
-          </View>
+          {item.onset_time &&
+            <View className='info-row'>
+              <View className='label'>安装时间</View>
+              <View className='value'>{item.onset_time}</View>
+            </View>
+          }
+          {item.car_model &&
+            <View className='info-row'>
+              <View className='label'>车型</View>
+              <View className='value'>{item.car_model}</View>
+            </View>
+          }
+          {item.vin &&
+            <View className='info-row'>
+              <View className='label'>车架号</View>
+              <View className='value'>{item.vin}</View>
+            </View>
+          }
         </View>
       </View>
     )
@@ -113,6 +127,8 @@ function DeviceStat() {
         icon: 'none'
       })
       console.error('下载失败:', error)
+    } finally {
+      Taro.hideLoading()
     }
   }
 
