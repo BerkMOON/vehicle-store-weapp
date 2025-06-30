@@ -165,8 +165,8 @@ function DeviceStat() {
 
         <View className='list-title'>
           {StateTypeMap[stateType]}设备列表
-          <Button color="#4e54c8" className='download-icon' onClick={() => downloadXlsx(stateType)}>
-            导出 <Download />
+          <Button color="#4e54c8" onClick={() => downloadXlsx(stateType)}>
+            <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
           </Button>
         </View>
         <ScrollableList

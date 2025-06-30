@@ -8,6 +8,11 @@ import { DeviceAPI } from '@/request/deviceApi'
 import { LossInfo, LossRequest } from '@/request/deviceApi/typings'
 import dayjs from 'dayjs'
 import FilterPopup from './components/FilterPopup'
+import { Copy, Download } from '@nutui/icons-react-taro'
+import Taro from '@tarojs/taro'
+import { fetchAllPaginatedData } from '@/utils/request'
+import { createXlsxFile } from '@/utils/downloadXlsx'
+import { LossNameMap } from '@/common/constants/constants'
 
 function LostReminder() {
   const listRef = useRef<{ refresh: () => void }>()
@@ -61,7 +66,18 @@ function LostReminder() {
         </View>
         <View className='info-row'>
           <View className='label'>手机号：</View>
-          <View className='value'>{lossInfo.phone || '-'}</View>
+          <View className='value'>{lossInfo.phone || '-'}
+            <Copy size={16} className='copy-icon' onClick={() => {
+              Taro.setClipboardData({
+                data: lossInfo.phone || '',
+                success: () => {
+                  Taro.showToast({
+                    title: '手机号已复制',
+                    icon: 'success'
+                  })
+                }
+              })
+            }} /></View>
         </View>
         <View className='info-row'>
           <View className='label'>触发时间：</View>
@@ -82,6 +98,48 @@ function LostReminder() {
       </View>
     </View>
   )
+
+  const downloadXlsx = async () => {
+    Taro.showLoading({
+      title: '下载中...'
+    })
+    try {
+      const data = await fetchAllPaginatedData(DeviceAPI.getLossNotifications, {
+        ...(sn && { sn }),
+        ...(date_range && {
+          start_time: date_range?.[0],
+          end_time: date_range?.[1],
+        }),
+      }, {
+        responseKey: 'record_list',
+        pageSize: 100,
+      })
+
+      if (data.length > 0) {
+        createXlsxFile({
+          data,
+          fileName: `流失提醒列表${dayjs(date_range?.[0]).format('YYYY-MM-DD')}~${dayjs(date_range?.[1]).format('YYYY-MM-DD')}`,
+          keyAndNames: LossNameMap,
+        })
+        Taro.hideLoading()
+      } else {
+        Taro.hideLoading()
+        Taro.showToast({
+          title: '暂无数据',
+          icon: 'none'
+        })
+      }
+    } catch (error) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: '下载失败',
+        icon: 'none'
+      })
+      console.error('下载失败:', error)
+    } finally {
+      Taro.hideLoading()
+    }
+  }
 
   return (
     <GeneralPage>
@@ -108,12 +166,15 @@ function LostReminder() {
           <Button color='#4e54c8' className='filter-btn' onClick={() => setShowFilter(true)}>筛选</Button>
         </View>
 
-        {total && <View className='stats-card'>
+        {total ? <View className='stats-card'>
+          <Button color='#4e54c8' className='download-btn' onClick={downloadXlsx}>
+            <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
+          </Button>
           <View className='stats-item'>
             <View className='stats-label'>可能流失数量</View>
             <View className='stats-value'>{total}</View>
           </View>
-        </View>}
+        </View> : null}
 
         <ScrollableList
           ref={listRef}
