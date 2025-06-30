@@ -1,22 +1,29 @@
 import Taro from '@tarojs/taro';
 import * as XLSX from 'xlsx';
 
+// 辅助函数，用于安全访问嵌套属性
+const getNestedValue = (obj: any, path: string) => {
+  return path.split('.').reduce((acc, key) => {
+    if (acc === null || acc === undefined) return null;
+    return acc[key];
+  }, obj);
+}
+
 export const createXlsxFile = (params: { data: any[], fileName: string, keyAndNames: any[] }) => {
   const { data, fileName, keyAndNames } = params
 
   const filePath = Taro.env.USER_DATA_PATH + '/'+ fileName;
 
-  const fieldMappings = Object.fromEntries(
-    keyAndNames?.map(({ key, name }) => [key, name]) || []
-  );
-
   const filteredData = data?.map(item => {
     // 确保 item 是对象
     if (typeof item !== 'object' || item === null) return {};
 
-    return Object.entries(fieldMappings).reduce((acc, [srcKey, targetKey]) => {
-      // 安全访问属性
-      acc[targetKey as string] = (item as Record<string, any>)[srcKey] ?? null; // 空值处理
+    return keyAndNames.reduce((acc, { key, name }) => {
+      if (typeof key === 'function') {
+        acc[name] = key(item) ?? null;
+      } else {
+        acc[name] = getNestedValue(item, key) ?? null;
+      }
       return acc;
     }, {});
   });
@@ -24,10 +31,10 @@ export const createXlsxFile = (params: { data: any[], fileName: string, keyAndNa
   const wb = XLSX.utils.book_new()
   const ws = XLSX.utils.json_to_sheet(filteredData)
 
-  const colWidth = 25;
-  ws['!cols'] = filteredData 
-    ? Object.keys(filteredData).map(() => ({ wch: colWidth }))
-    : [];
+  // 根据 keyAndNames 设置每列宽度
+  ws['!cols'] = keyAndNames.map(({ width }) => ({
+    wch: width ?? 25
+  }));
 
   XLSX.utils.book_append_sheet(wb, ws, fileName)
   const base64 = XLSX.write(wb, { type: 'base64', bookType: 'xlsx' });

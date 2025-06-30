@@ -40,3 +40,37 @@ export const CouponStatusMap = {
   [CouponBatchStatus.AUDITED]: '审核通过',
   [CouponBatchStatus.REJECTED]: '审核拒绝'
 }
+
+export const LossNameMap = [{
+  key: 'sn',
+  name: '设备号',
+  width: 18
+}, {
+  key: 'car_model',
+  name: '用户车型',
+  width: 15
+}, {
+  key: 'phone',
+  name: '手机号',
+  width: 13
+}, {
+  key: 'trigger_time',
+  name: '触发时间',
+  width: 18
+}, 
+{
+  name: '触发地点',
+  key: (lossInfo) => {
+    return lossInfo.nearby_points?.[0].name || '';
+  },
+  width: 40
+},{
+  name: '具体位置',
+  key: (lossInfo) => {
+    const city = lossInfo.nearby_points?.[0].city || '';
+    const district = lossInfo.nearby_points?.[0].district || '';
+    const address = lossInfo.nearby_points?.[0].address || '';
+    return city + district + address;
+  },
+  width: 50
+}]
