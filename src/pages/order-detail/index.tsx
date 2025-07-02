@@ -24,8 +24,8 @@ function OrderDetail() {
       )
       if (res?.response_status?.code === SuccessCode) {
         setOrderInfo(res?.data)
-
-        if (res?.data.gps?.lng && res?.data.gps?.lat) {
+        console.log('orderInfo', res?.data)
+        if (res?.data?.gps?.lng && res?.data?.gps?.lat) {
           const gdMapInfo = await MapAPI.getGDAddressInfo({
             location: `${res.data.gps.lng},${res.data.gps.lat}`
           })

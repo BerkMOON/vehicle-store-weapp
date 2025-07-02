@@ -10,7 +10,7 @@ export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
 
 export const handleLoginSuccess = (defaultPath: string) => {
   const lastPage = Taro.getStorageSync('lastPage')
-  if (lastPage && lastPage !== '/pages/index/index') {
+  if (lastPage && lastPage !== '/pages/index/index' && lastPage !== '/pages/login/index') {
     Taro.removeStorageSync('lastPage')
     Taro.reLaunch({
       url: lastPage

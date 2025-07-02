@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserStore } from '@/store/user'
 import { UserAPI } from '@/request/userApi'
 import Taro from '@tarojs/taro'
@@ -6,12 +6,11 @@ import { initTab } from '@/utils/utils'
 import { useTabInfoStore } from '@/store/tabInfo'
 import { SuccessCode } from '@/common/constants/constants'
 
-let isInitialized = false
+
 
 export const useAuth = () => {
   const { setUserInfo } = useUserStore()
   const { setTabInfo } = useTabInfoStore()
-
 
   const checkLoginStatus = async () => {
     const response = await UserAPI.getUserInfo()
@@ -20,20 +19,15 @@ export const useAuth = () => {
       setUserInfo(userInfo)
       initTab(userInfo.role, setTabInfo)
     } else {
-      Taro.navigateTo({
+      Taro.redirectTo({
         url: '/pages/login/index'
       })
     }
   }
 
-
   useEffect(() => {
-    if (!isInitialized) {
-      checkLoginStatus()
-      isInitialized = true
-    }
+    checkLoginStatus()
   }, [])
-
 
   return {}
 }

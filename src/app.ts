@@ -11,11 +11,6 @@ function App(props) {
     useUserStore.getState().initializeFromStorage()
   })
 
-
-  // 对应 onShow
-  useDidShow(() => {
-  })
-
   // 对应 onHide
   useDidHide(() => { })
 

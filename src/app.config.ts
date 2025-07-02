@@ -5,12 +5,12 @@ export default defineAppConfig({
     'pages/order/index',
     'pages/mine/index',
     'pages/order-detail/index',
-    'pages/order-search/index',
-    'pages/coupon-generate/index',
-    'pages/coupon-apportion/index',
-    'pages/coupon-review/index',
-    'pages/coupon-review/detail/index',
-    'pages/finance/index',
+    // 'pages/order-search/index',
+    // 'pages/coupon-generate/index',
+    // 'pages/coupon-apportion/index',
+    // 'pages/coupon-review/index',
+    // 'pages/coupon-review/detail/index',
+    // 'pages/finance/index',
     'pages/user-list/index',
     'pages/device-stat/index',
     'pages/lost-reminder/index'
@@ -34,10 +34,10 @@ export default defineAppConfig({
         pagePath: 'pages/user-list/index',
         text: '员工列表'
       },
-      {
-        pagePath: 'pages/coupon-apportion/index',
-        text: '优惠券发放'
-      },
+    //   {
+    //     pagePath: 'pages/coupon-apportion/index',
+    //     text: '优惠券发放'
+    //   },
       {
         pagePath: 'pages/mine/index',
         text: '我的',
@@ -46,10 +46,10 @@ export default defineAppConfig({
         pagePath: 'pages/device-stat/index',
         text: '设备统计'
       },
-      {
-        pagePath: 'pages/finance/index',
-        text: '优惠券结算'
-      },
+    //   {
+    //     pagePath: 'pages/finance/index',
+    //     text: '优惠券结算'
+    //   },
       {
         pagePath: 'pages/lost-reminder/index',
         text: '流失提醒'

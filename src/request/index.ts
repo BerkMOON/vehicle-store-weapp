@@ -5,10 +5,14 @@ const saveCurrentPage = () => {
   const pages = Taro.getCurrentPages()
   const currentPage = pages[pages.length - 1]
   const url = `/${currentPage.route}`
+  if (url === '/pages/index/index') {
+    return false;
+  }
   const options = currentPage.options
   const queryString = Object.keys(options).map(key => `${key}=${options[key]}`).join('&')
   const fullPath = queryString ? `${url}?${queryString}` : url
   Taro.setStorageSync('lastPage', fullPath)
+  return true;
 }
 
 // API 请求统一处理函数
@@ -27,10 +31,12 @@ export const getRequest = async <T>(config: any): Promise<T | null>  => {
 
     // 处理 401 状态
     if (res.statusCode === 401) {
-      saveCurrentPage()
-      Taro.reLaunch({
-        url: '/pages/login/index'
-      })
+      const isSaved = saveCurrentPage()
+      if (isSaved) {
+        Taro.redirectTo({
+          url: '/pages/login/index'
+        })
+      }
       return null
     }
 
@@ -59,10 +65,12 @@ export const postRequest = async <T>(config: any): Promise<T | null> => {
 
     // 处理 401 状态
     if (res.statusCode === 401) {
-      saveCurrentPage()
-      Taro.reLaunch({
-        url: '/pages/login/index'
-      })
+      const isSaved = saveCurrentPage()
+      if (isSaved) {
+        Taro.redirectTo({
+          url: '/pages/login/index'
+        })
+      }
       return null
     }
 
