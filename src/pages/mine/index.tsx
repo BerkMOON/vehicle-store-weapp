@@ -6,10 +6,17 @@ import GeneralPage from '@/components/GeneralPage'
 import './index.scss'
 import { useUserStore } from '@/store/user'
 import { Role, ROLES_INFO } from '@/common/constants/constants'
+import { useState } from 'react'
+import StoreSelect from '@/components/StoreSelect'
 
 function Index() {
   // 获取用户角色
-  const { userInfo } = useUserStore()
+  const { userInfo, currentRoleInfo } = useUserStore()
+  const [visible, setVisible] = useState(false)
+
+
+  // 提取门店列表
+  const storeList = userInfo?.role_list || []
 
   // 退出登录
   const handleLogout = () => {
@@ -50,11 +57,27 @@ function Index() {
           />
           <View className="info">
             <View className="name">{userInfo?.nickname}</View>
-            <View className="role">{ROLES_INFO[userInfo?.role || Role.Support]}</View>
+            <View className="role">{ROLES_INFO[currentRoleInfo?.role || Role.Support]}</View>
+          </View>
+          <View className="store-selector">
+            <View
+              className="store-current"
+            >
+              {currentRoleInfo?.store_name}
+            </View>
           </View>
         </View>
-
         <View className="action-list">
+          {
+            storeList.length > 1 && (
+              <Button
+                className="action-btn"
+                onClick={() => setVisible(true)}
+              >
+                切换门店
+              </Button>
+            )
+          }
           <Button
             className="action-btn"
             onClick={handleChangePassword}
@@ -69,6 +92,7 @@ function Index() {
           </Button>
         </View>
       </View>
+      <StoreSelect visible={visible} setVisible={setVisible}></StoreSelect>
     </GeneralPage>
   )
 }

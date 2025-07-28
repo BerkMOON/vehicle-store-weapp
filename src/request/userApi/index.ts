@@ -27,14 +27,14 @@ export const UserAPI = {
   }),
 
   /**
-   * 获取b端用户
-   * GET /api/business/user/getAllBusinessUsers
-   * 接口ID：undefined
-   * 接口地址：https://app.apifox.com/link/project/5084807/apis/api-undefined
+   * 后端用户权限关系列表
+   * GET /api/admin/user/business/getUserRoles
+   * 接口ID：325743716
+   * 接口地址：https://app.apifox.com/link/project/5084807/apis/api-325743716
    */
-  getAllBusinessUsers: (params: GetAllBusinessUsersRequest) => getRequest<ResponseInfoType<GetAllBusinessUsersResponse>>({
-    url: `${prefix}/getAllBusinessUsers`,
-    params
+  getUserRoles: (params: GetAllBusinessUsersRequest) => getRequest<ResponseInfoType<GetAllBusinessUsersResponse>>({
+    url: `${prefix}/getUserRoles`,
+    params,
   }),
 
   /**

@@ -1,26 +1,22 @@
 import { View } from '@tarojs/components'
-import { Button, Form, Dialog } from '@nutui/nutui-react-taro'
+import { Button, Form } from '@nutui/nutui-react-taro'
 import { useRef, useState } from 'react'
 import { UserAPI } from '@/request/userApi'
 import { UserListInfo, GetAllBusinessUsersRequest } from '@/request/userApi/typings'
-import Taro from '@tarojs/taro'
 import GeneralPage from '@/components/GeneralPage'
 import ScrollableList from '@/components/ScrollableList'
 import { ROLES_INFO } from '@/common/constants/constants'
 import FilterPopup from './components/FilterPopup'
-import EditInfoPopup from './components/EditInfoPopup'
-import EditRolePopup from './components/EditRolePopup'
-import CreateUserPopup from './components/CreateUserPopup'
 import './index.scss'
 
 function UserList() {
   const [form] = Form.useForm()
   const listRef = useRef<{ refresh: () => void }>()
   const [showFilter, setShowFilter] = useState(false)
-  const [showEditInfo, setShowEditInfo] = useState(false)
-  const [showEditRole, setShowEditRole] = useState(false)
-  const [showCreate, setShowCreate] = useState(false)
-  const [currentUser, setCurrentUser] = useState<UserListInfo | null>(null)
+//   const [showEditInfo, setShowEditInfo] = useState(false)
+//   const [showEditRole, setShowEditRole] = useState(false)
+//   const [showCreate, setShowCreate] = useState(false)
+//   const [currentUser, setCurrentUser] = useState<UserListInfo | null>(null)
 
   const fetchData = async (page: number) => {
     const formValues = form.getFieldsValue(true) as GetAllBusinessUsersRequest
@@ -29,43 +25,43 @@ function UserList() {
       limit: 10,
       ...formValues,
     }
-    const res = await UserAPI.getAllBusinessUsers(params)
-    return res?.data?.user_list || []
+    const res = await UserAPI.getUserRoles(params)
+    return res?.data?.role_list || []
   }
 
-  const handleStatusChange = async (user: UserListInfo) => {
-    Dialog.open('disable', {
-      title: '提示',
-      content: `确定要${user.status?.code === 1 ? '禁用' : '启用'}该用户吗？`,
-      onConfirm: async () => {
-        try {
-          await UserAPI.status({
-            user_id: user.id!,
-            status: user.status?.code === 1 ? 'deleted' : 'active'
-          })
-          Dialog.close('disable')
-          Taro.showToast({ title: '操作成功', icon: 'success' })
-          listRef.current?.refresh()
-        } catch (error) {
-          Dialog.close('disable')
-          Taro.showToast({ title: '操作失败', icon: 'error' })
-        }
-      },
-      onCancel: () => {
-        Dialog.close('disable')
-      },
-    })
-  }
+//   const handleStatusChange = async (user: UserListInfo) => {
+//     Dialog.open('disable', {
+//       title: '提示',
+//       content: `确定要${user.status?.code === 1 ? '禁用' : '启用'}该用户吗？`,
+//       onConfirm: async () => {
+//         try {
+//           await UserAPI.status({
+//             user_id: user.id!,
+//             status: user.status?.code === 1 ? 'deleted' : 'active'
+//           })
+//           Dialog.close('disable')
+//           Taro.showToast({ title: '操作成功', icon: 'success' })
+//           listRef.current?.refresh()
+//         } catch (error) {
+//           Dialog.close('disable')
+//           Taro.showToast({ title: '操作失败', icon: 'error' })
+//         }
+//       },
+//       onCancel: () => {
+//         Dialog.close('disable')
+//       },
+//     })
+//   }
 
-  const handleEditUser = (user: UserListInfo) => {
-    setCurrentUser(user)
-    setShowEditInfo(true)
-  }
+//   const handleEditUser = (user: UserListInfo) => {
+//     setCurrentUser(user)
+//     setShowEditInfo(true)
+//   }
 
-  const handleEditRole = (user: UserListInfo) => {
-    setCurrentUser(user)
-    setShowEditRole(true)
-  }
+//   const handleEditRole = (user: UserListInfo) => {
+//     setCurrentUser(user)
+//     setShowEditRole(true)
+//   }
 
   const renderItem = (user: UserListInfo) => (
     <View className='user-item' key={user.id}>
@@ -95,7 +91,7 @@ function UserList() {
           <View className='value'>{user.status?.name}</View>
         </View>
       </View>
-      <View className='user-actions'>
+      {/* <View className='user-actions'>
         <Button size='small' onClick={() => handleEditUser(user)}>编辑信息</Button>
         <Button size='small' onClick={() => handleEditRole(user)}>修改角色</Button>
         <Button
@@ -105,7 +101,7 @@ function UserList() {
         >
           {user.status?.code === 1 ? '禁用' : '启用'}
         </Button>
-      </View>
+      </View> */}
     </View>
   )
 
@@ -114,12 +110,12 @@ function UserList() {
       <View className='user-list-container'>
         <View className='header'>
           <Button className='filter-btn' onClick={() => setShowFilter(true)}>筛选</Button>
-          <Button
+          {/* <Button
             color='#4e54c8'
             onClick={() => setShowCreate(true)}
           >
             新建员工
-          </Button>
+          </Button> */}
         </View>
 
         <ScrollableList
@@ -140,7 +136,7 @@ function UserList() {
           form={form}
         />
 
-        <CreateUserPopup
+        {/* <CreateUserPopup
           visible={showCreate}
           onClose={() => setShowCreate(false)}
           onSuccess={() => listRef.current?.refresh()}
@@ -158,9 +154,9 @@ function UserList() {
           onClose={() => setShowEditRole(false)}
           onSuccess={() => listRef.current?.refresh()}
           currentUser={currentUser}
-        />
+        /> */}
 
-        <Dialog id="disable" />
+        {/* <Dialog id="disable" /> */}
       </View>
     </GeneralPage>
   )

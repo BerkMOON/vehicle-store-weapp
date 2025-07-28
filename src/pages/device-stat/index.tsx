@@ -6,19 +6,23 @@ import { SuccessCode } from '@/common/constants/constants'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'
 import ScrollableList from '@/components/ScrollableList'
-import { Download } from '@nutui/icons-react-taro'
+import { ArrowExchange, Download } from '@nutui/icons-react-taro'
 import { createXlsxFile } from '@/utils/downloadXlsx'
 import { fetchAllPaginatedData } from '@/utils/request'
 import Taro from '@tarojs/taro'
 import { Button, Divider } from '@nutui/nutui-react-taro'
 import dayjs from 'dayjs'
 import { StateTypeEnum, StateTypeMap, DeviceStatParamsMap, StatKeyAndNamesMap, StatInfoList } from './constants'
+import { useUserStore } from '@/store/user'
+import StoreSelect from '@/components/StoreSelect'
 
 function DeviceStat() {
   const [statInfo, setStatInfo] = useState<StatResponse>()
   const scrollRef = useRef<{ refresh: () => void }>()
   const [stateType, setStateType] = useState<StateTypeEnum>(StateTypeEnum.NotBoundAndReported);
   const [fetchParams, setFetchParams] = useState<any>({ report_status: 'reported', status: 'init' });
+  const { currentRoleInfo } = useUserStore((state) => state)
+  const [visible, setVisible] = useState(false)
 
   const fetchStatInfo = async () => {
     try {
@@ -136,6 +140,9 @@ function DeviceStat() {
     <GeneralPage>
       <View className='page'>
         <View className='device-stat'>
+          <View onClick={() => setVisible(true)} className='store-name'>{currentRoleInfo?.store_name} 
+            <ArrowExchange className='icon-m' size={16} />
+          </View>
           <View className='stat-card'>
             <View className='stat-content'>
               {
@@ -178,6 +185,7 @@ function DeviceStat() {
           emptyText={`暂无${StateTypeMap[stateType]}设备`}
         />
       </View>
+      <StoreSelect visible={visible} setVisible={setVisible}></StoreSelect>
     </GeneralPage>
   )
 }

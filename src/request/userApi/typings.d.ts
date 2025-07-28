@@ -16,6 +16,15 @@ export interface UserInfo {
   role: Role
   create_time: string
   modify_time: string
+  role_list: RoleList[]
+}
+
+export interface RoleList {
+  company_id: number
+  company_name: string
+  role: Role
+  store_id: number
+  store_name: string
 }
 
 // b端注册 请求参数
@@ -58,7 +67,7 @@ export interface UserListInfo {
 // 获取b端用户 返回结果
 export interface GetAllBusinessUsersResponse {
   meta: PageInfo
-  user_list: UserListInfo[]
+  role_list: UserListInfo[]
 }
 
 // 更新b端用户状态 请求参数
@@ -89,4 +98,3 @@ export interface GetAllBusinessRoleResponse {
     name: string
   }[]
 }
-

@@ -89,11 +89,11 @@ function CustomTabBar() {
     tabInfo,
     setTabInfo
   } = useTabInfoStore()
-  const { userInfo } = useUserStore()
+  const { currentRoleInfo } = useUserStore()
   const [tabList, setTabList] = useState<TabInfo[]>([])
 
   useEffect(() => {
-    const role = userInfo?.role
+    const role = currentRoleInfo?.role
     const tabList = getTab(role as Role)
     setTabList(tabList)
     if (!tabInfo) {

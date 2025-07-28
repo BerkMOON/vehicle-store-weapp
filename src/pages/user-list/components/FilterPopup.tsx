@@ -1,6 +1,8 @@
 import { View } from '@tarojs/components'
 import { Button, Form, Input, Popup, Radio, RadioGroup } from '@nutui/nutui-react-taro'
-import { ROLES_INFO } from '@/common/constants/constants'
+import { ROLES_INFO, SuccessCode } from '@/common/constants/constants'
+import { useEffect, useState } from 'react'
+import { UserAPI } from '@/request/userApi'
 
 interface FilterPopupProps {
   visible: boolean
@@ -11,6 +13,27 @@ interface FilterPopupProps {
 }
 
 export default function FilterPopup({ visible, onClose, onSearch, onReset, form }: FilterPopupProps) {
+  const [roleList, setRoleList] = useState<{ text: string; value: string }[]>([])
+
+  const fetchRoleList = async () => {
+    try {
+      const res = await UserAPI.getAllBusinessRole()
+      if (res?.response_status.code === SuccessCode) {
+        const list = res.data.role_list?.map(role => ({
+          text: role.name || '',
+          value: role.role || ''
+        })) || []
+        setRoleList(list)
+      }
+    } catch (error) {
+      console.error('获取角色列表失败：', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchRoleList()
+  }, [])
+
   return (
     <Popup visible={visible} position='bottom' onClose={onClose} style={{ height: '60vh' }}>
       <View className='filter-popup'>
@@ -22,16 +45,10 @@ export default function FilterPopup({ visible, onClose, onSearch, onReset, form 
             <Form.Item name='username' label='用户名'>
               <Input placeholder='请输入用户名' />
             </Form.Item>
-            <Form.Item name='phone' label='手机号'>
-              <Input placeholder='请输入手机号' />
-            </Form.Item>
-            <Form.Item name='email' label='邮箱'>
-              <Input placeholder='请输入邮箱' />
-            </Form.Item>
             <Form.Item name='role' label='角色'>
               <RadioGroup>
-                {Object.keys(ROLES_INFO).map(key => (
-                  <Radio key={key} value={key}>{ROLES_INFO[key]}</Radio>
+                {roleList.map((role, index) => (
+                  <Radio key={index} value={role.value}>{role.text}</Radio>
                 ))}
               </RadioGroup>
             </Form.Item>

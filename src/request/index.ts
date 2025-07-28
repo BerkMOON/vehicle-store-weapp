@@ -25,7 +25,9 @@ export const getRequest = async <T>(config: any): Promise<T | null>  => {
       method: 'GET',
       data: params,
       header: {
-        cookie: cookie || ''
+        cookie: cookie || '',
+        'X-Company-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.company_id,
+        'X-Store-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.store_id,
       }
     })
 

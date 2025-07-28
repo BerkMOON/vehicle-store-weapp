@@ -3,16 +3,13 @@ import { Input, Button, Checkbox, Form } from '@nutui/nutui-react-taro'
 import { useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import './index.scss'
-import { useUserStore } from '@/store/user'
-import { initTab } from '@/utils/utils'
-import { useTabInfoStore } from '@/store/tabInfo'
 import { LoginAPI } from '@/request/loginApi'
 import { SuccessCode } from '@/common/constants/constants'
+import { useAuth } from '@/hooks/useAuth'
 
 function Login() {
   const [form] = Form.useForm()
-  const { setUserInfo } = useUserStore()
-  const { setTabInfo } = useTabInfoStore()
+  const { checkLoginStatus } = useAuth(false)
 
   const onFinish = async (values) => {
     try {
@@ -30,9 +27,6 @@ function Login() {
           Taro.setStorageSync('cookies', response?.header['Set-Cookie'])
         }
 
-        const userInfo = response.data.data
-        setUserInfo(userInfo)
-
         if (values.remember) {
           Taro.setStorageSync('loginInfo', {
             username: values.username,
@@ -46,8 +40,7 @@ function Login() {
           title: '登录成功',
           icon: 'success'
         })
-
-        initTab(userInfo.role, setTabInfo)
+        checkLoginStatus()
       } else {
         Taro.hideLoading()
         Taro.showToast({
