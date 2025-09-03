@@ -13,11 +13,24 @@ export const supportTabList = [
     text: '工单列表',
     icon: <Agenda size={18} />
   },
-//   {
-//     pagePath: '/pages/coupon-apportion/index',
-//     text: '优惠券发放',
-//     icon: <Coupon size={18} />
-//   },
+  {
+    pagePath: '/pages/mine/index',
+    text: '我的',
+    icon: <User size={18} />
+  }
+]
+
+export const supportDirectorTabList = [
+  {
+    pagePath: '/pages/order/index',
+    text: '工单列表',
+    icon: <Agenda size={18} />
+  },
+  {
+    pagePath: '/pages/lost-reminder/index',
+    text: '流失提醒',
+    icon: <BellUnread size={18} />
+  },
   {
     pagePath: '/pages/mine/index',
     text: '我的',
@@ -30,6 +43,11 @@ export const supportManageTabList = [
     pagePath: '/pages/device-stat/index',
     text: '设备统计',
     icon: <Agenda size={18} />
+  },
+  {
+    pagePath: '/pages/lost-reminder/index',
+    text: '流失提醒',
+    icon: <BellUnread size={18} />
   },
   {
     pagePath: '/pages/order/index',
@@ -72,11 +90,11 @@ export const adminTabList = [
 ]
 
 export const financeTabList = [
-//   {
-//     pagePath: '/pages/finance/index',
-//     text: '优惠券结算',
-//     icon: <Coupon size={18} />
-//   },
+  //   {
+  //     pagePath: '/pages/finance/index',
+  //     text: '优惠券结算',
+  //     icon: <Coupon size={18} />
+  //   },
   {
     pagePath: '/pages/mine/index',
     text: '我的',

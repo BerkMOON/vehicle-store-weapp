@@ -1,5 +1,5 @@
 import { Role } from "@/common/constants/constants"
-import { supportTabList, financeTabList, adminTabList, supportManageTabList } from "@/components/CustomTabBar"
+import { supportTabList, financeTabList, adminTabList, supportManageTabList, supportDirectorTabList } from "@/components/CustomTabBar"
 import Taro from "@tarojs/taro"
 
 export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
@@ -26,8 +26,9 @@ export const handleLoginSuccess = (defaultPath: string) => {
 export const getTab = (role: Role) => {
   switch (role) {
     case Role.Support:
-    case Role.SupportDirector:
       return supportTabList
+    case Role.SupportDirector:
+      return supportDirectorTabList
     case Role.Admin:
       return adminTabList
     case Role.Finance:
