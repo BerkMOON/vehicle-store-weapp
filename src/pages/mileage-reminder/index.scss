@@ -1,0 +1,127 @@
+.loss-container {
+  --header-height: 101px;
+  background: #f5f5f5;
+
+  .header {
+    display: flex;
+    padding: 16px;
+    height: 32px;
+    justify-content: space-between;
+    background-color: #fff;
+    margin-bottom: 12px;
+
+    .filter {
+      display: flex;
+
+      .filter-item {
+        margin-left: 18px;
+      }
+
+      .filter-label {
+        font-size: 14px;
+      }
+
+      .filter-value {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+
+    .filter-btn {
+      margin-right: 6px;
+    }
+  }
+
+  .user-item {
+    margin: 0px 8px 12px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .user-info {
+      .info-row {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 14px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .label {
+          color: #666;
+          width: 70px;
+          flex-shrink: 0;
+        }
+
+        .value {
+          color: #333;
+          flex: 1;
+          display: flex;
+          align-items: center;
+
+          .copy-icon {
+            margin-left: 8px;
+          }
+        }
+
+        .clickable {
+          color: #4e54c8;
+        }
+      }
+
+      .address-info {
+        font-size: 14px;
+        .label {
+          color: #666;
+          width: 70px;
+          flex-shrink: 0;
+        }
+
+        .value {
+          color: #333;
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+.filter-popup {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .popup-header {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+
+  .popup-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+
+    .nut-form-item {
+      margin-bottom: 16px;
+    }
+  }
+
+  .popup-footer {
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #eee;
+
+    .nut-button {
+      flex: 1;
+    }
+  }
+}

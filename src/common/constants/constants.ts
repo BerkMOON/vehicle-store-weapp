@@ -9,7 +9,7 @@ export enum Role {
   SupportDirector = 'support_director',
   Admin = 'admin',
   Finance = 'finance',
-  SupportManager ='customer_service_manager'
+  SupportManager = 'customer_service_manager'
 }
 
 export const ROLES_INFO = {
@@ -57,14 +57,14 @@ export const LossNameMap = [{
   key: 'trigger_time',
   name: '触发时间',
   width: 18
-}, 
+},
 {
   name: '触发地点',
   key: (lossInfo) => {
     return lossInfo.nearby_points?.[0].name || '';
   },
   width: 40
-},{
+}, {
   name: '具体位置',
   key: (lossInfo) => {
     const city = lossInfo.nearby_points?.[0].city || '';
@@ -73,4 +73,30 @@ export const LossNameMap = [{
     return city + district + address;
   },
   width: 50
+}]
+
+export const MileageNameMap = [{
+  key: 'store_name',
+  name: '门店',
+  width: 20
+}, {
+  key: 'sn',
+  name: '设备号',
+  width: 18
+}, {
+  key: 'brand',
+  name: '品牌',
+  width: 10
+}, {
+  key: 'car_model',
+  name: '用户车型',
+  width: 15
+}, {
+  key: 'mileage',
+  name: '用户里程(km)',
+  width: 15
+}, {
+  key: 'phone',
+  name: '手机号',
+  width: 13
 }]

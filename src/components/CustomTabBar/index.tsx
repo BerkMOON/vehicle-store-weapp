@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { Tabbar } from '@nutui/nutui-react-taro'
-import { Agenda, BellUnread, Calculator, Coupon, Find, People, User } from '@nutui/icons-react-taro'
+import { Agenda, BellUnread, Calculator, Coupon, Find, People, Truck, User } from '@nutui/icons-react-taro'
 import { useState, useEffect } from 'react'
 import { TabInfo, useTabInfoStore } from '@/store/tabInfo'
 import { Role } from '@/common/constants/constants'
@@ -32,6 +32,11 @@ export const supportDirectorTabList = [
     icon: <BellUnread size={18} />
   },
   {
+    pagePath: '/pages/mileage-reminder/index',
+    text: '里程提醒',
+    icon: <Truck size={18} />
+  },
+  {
     pagePath: '/pages/mine/index',
     text: '我的',
     icon: <User size={18} />
@@ -48,6 +53,11 @@ export const supportManageTabList = [
     pagePath: '/pages/lost-reminder/index',
     text: '流失提醒',
     icon: <BellUnread size={18} />
+  },
+  {
+    pagePath: '/pages/mileage-reminder/index',
+    text: '里程提醒',
+    icon: <Truck size={18} />
   },
   {
     pagePath: '/pages/order/index',
@@ -78,6 +88,11 @@ export const adminTabList = [
     icon: <BellUnread size={18} />
   },
   {
+    pagePath: '/pages/mileage-reminder/index',
+    text: '里程提醒',
+    icon: <Truck size={18} />
+  },
+  {
     pagePath: '/pages/user-list/index',
     text: '员工列表',
     icon: <People size={18} />
@@ -90,11 +105,6 @@ export const adminTabList = [
 ]
 
 export const financeTabList = [
-  //   {
-  //     pagePath: '/pages/finance/index',
-  //     text: '优惠券结算',
-  //     icon: <Coupon size={18} />
-  //   },
   {
     pagePath: '/pages/mine/index',
     text: '我的',

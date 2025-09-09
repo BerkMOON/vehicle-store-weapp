@@ -4,6 +4,8 @@ import {
   DeviceResponse,
   LossRequest,
   LossResponse,
+  MileageReminderRequest,
+  MileageReminderResponse,
   StatResponse,
 } from './typings.d'
 import { getRequest } from ".."
@@ -42,6 +44,17 @@ export const DeviceAPI = {
    */
   getLossNotifications: (params: LossRequest) => getRequest<ResponseInfoType<LossResponse>>({
     url: `${prefix}/getLossNotifications`,
+    params
+  }),
+
+  /**
+   * b端里程列表
+   * GET /api/business/device/mileage/list
+   * 接口ID：345524847
+   * 接口地址：https://app.apifox.com/link/project/5084807/apis/api-345524847
+   */
+  getMileageList: (params: MileageReminderRequest) => getRequest<ResponseInfoType<MileageReminderResponse>>({
+    url: `${prefix}/mileage/list`,
     params
   }),
 }

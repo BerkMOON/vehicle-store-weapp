@@ -11,6 +11,7 @@ export default defineAppConfig({
     // 'pages/coupon-review/index',
     // 'pages/coupon-review/detail/index',
     // 'pages/finance/index',
+    'pages/mileage-reminder/index',
     'pages/user-list/index',
     'pages/device-stat/index',
     'pages/lost-reminder/index'
@@ -53,6 +54,10 @@ export default defineAppConfig({
       {
         pagePath: 'pages/lost-reminder/index',
         text: '流失提醒'
+      },
+      {
+        pagePath: 'pages/mileage-reminder/index',
+        text: '里程提醒'
       }
     ]
   },
