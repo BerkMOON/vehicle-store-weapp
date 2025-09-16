@@ -173,12 +173,14 @@ function Index() {
                 认领
               </Button> : null
           }
-          <Button size='small' color="#4e54c8" onClick={(e) => {
-            e.stopPropagation()
-            handleFollow(order)
-          }}>
-            跟进
-          </Button>
+          {
+            order.status.code !== TaskType.Pending && <Button size='small' color="#4e54c8" onClick={(e) => {
+              e.stopPropagation()
+              handleFollow(order)
+            }}>
+              跟进
+            </Button>
+          }
         </View>
       </View>
     )

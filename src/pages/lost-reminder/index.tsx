@@ -53,6 +53,13 @@ function LostReminder() {
     listRef.current?.refresh()
   }
 
+  const handleRest = () => {
+    form.setFieldsValue({
+      date_range: [dayjs().subtract(7, 'day').format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
+      sn: ''
+    })
+  }
+
   const renderItem = (lossInfo: LossInfo) => (
     <View className='user-item'>
       <View className='user-info'>
@@ -163,13 +170,19 @@ function LostReminder() {
               </View>
             </View>
           </View>
-          <Button color='#4e54c8' className='filter-btn' onClick={() => setShowFilter(true)}>筛选</Button>
+          <Button color='#4e54c8' onClick={() => setShowFilter(true)}>筛选</Button>
         </View>
 
         {total ? <View className='stats-card'>
-          <Button color='#4e54c8' className='download-btn' onClick={downloadXlsx}>
-            <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
-          </Button>
+          <View className='btn-group'>
+            <Button color='#4e54c8' className='download-btn' onClick={() => {
+              handleRest()
+              listRef.current?.refresh()
+            }}>重置</Button>
+            <Button color='#4e54c8' className='download-btn' onClick={downloadXlsx}>
+              <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
+            </Button>
+          </View>
           <View className='stats-item'>
             <View className='stats-label'>可能流失数量</View>
             <View className='stats-value'>{total}</View>
@@ -192,12 +205,7 @@ function LostReminder() {
           setShowFilter(false)
           listRef.current?.refresh()
         }}
-        onReset={() => {
-          form.setFieldsValue({
-            date_range: [dayjs().subtract(7, 'day').format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
-            sn: ''
-          })
-        }}
+        onReset={handleRest}
         form={form}
       />
     </GeneralPage >

@@ -47,6 +47,13 @@ function MileageReminder() {
     listRef.current?.refresh()
   }
 
+  const handleReset = () => {
+    form.setFieldsValue({
+      mileage: '',
+      sn: ''
+    })
+  }
+
   const renderItem = (mileageInfo: MileageReminderInfo) => (
     <View className='user-item'>
       <View className='user-info'>
@@ -150,10 +157,16 @@ function MileageReminder() {
           </View>
           <View>
             <Button color='#4e54c8' className='filter-btn' onClick={() => setShowFilter(true)}>筛选</Button>
-            <Button color='#4e54c8' className='download-btn' onClick={downloadXlsx}>
-              <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
-            </Button>
+            <Button color='#4e54c8' onClick={() => {
+              handleReset()
+              listRef.current?.refresh()
+            }}>重置</Button>
           </View>
+        </View>
+        <View className='stats-card'>
+          <Button color='#4e54c8' onClick={downloadXlsx}>
+            <View className='download-icon'>导出 <Download style={{ marginLeft: '4px' }} /></View>
+          </Button>
         </View>
 
         <ScrollableList
@@ -172,12 +185,7 @@ function MileageReminder() {
           setShowFilter(false)
           listRef.current?.refresh()
         }}
-        onReset={() => {
-          form.setFieldsValue({
-            mileage: '',
-            sn: ''
-          })
-        }}
+        onReset={handleReset}
         form={form}
       />
     </GeneralPage >
