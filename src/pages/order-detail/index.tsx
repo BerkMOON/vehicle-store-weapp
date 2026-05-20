@@ -1,4 +1,4 @@
-import { View, Text, Video } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { Button } from '@nutui/nutui-react-taro'
 import { useEffect, useState } from 'react'
 import './index.scss'
@@ -8,14 +8,19 @@ import { TaskInfo } from '@/request/taskApi/typings'
 import Taro from '@tarojs/taro'
 import { MapAPI } from '@/request/mapApi'
 import FollowPopup from '../order/components/FollowPopup'
+import CallConfirmPopup from './components/CallConfirmPopup'
 import { SuccessCode } from '@/common/constants/constants'
 import { Copy, Phone, PlayStart } from '@nutui/icons-react-taro'
+import { useUserStore } from '@/store/user'
+import { encryptPhone } from '@/utils/utils'
 
 function OrderDetail() {
   const router = useRouter()
   const [orderInfo, setOrderInfo] = useState<TaskInfo>()
   const [addressInfo, setAddressInfo] = useState<string>('')
   const [showFollow, setShowFollow] = useState(false)
+  const [showCallConfirm, setShowCallConfirm] = useState(false)
+  const { userInfo } = useUserStore()
 
   const fetchDetail = async () => {
     try {
@@ -24,7 +29,6 @@ function OrderDetail() {
       )
       if (res?.response_status?.code === SuccessCode) {
         setOrderInfo(res?.data)
-        console.log('orderInfo', res?.data)
         if (res?.data?.gps?.lng && res?.data?.gps?.lat) {
           const gdMapInfo = await MapAPI.getGDAddressInfo({
             location: `${res.data.gps.lng},${res.data.gps.lat}`
@@ -125,6 +129,31 @@ function OrderDetail() {
     })
   }
 
+  const handleMakeCall = () => {
+    if (!orderInfo?.phone) {
+      Taro.showToast({
+        title: '用户手机号不存在',
+        icon: 'error'
+      })
+      return
+    }
+
+    // 获取当前时间
+    // const now = new Date()
+    // const currentHour = now.getHours()
+
+    // // 判断是否在早上9点到晚上9点之间（9:00-21:00）
+    // if (currentHour >= 9 && currentHour < 21) {
+    //   // 工作时间：使用虚拟号呼叫（弹窗方式）
+    //   setShowCallConfirm(true)
+    // } else {
+      // 非工作时间：直接调起电话拨号
+      Taro.makePhoneCall({
+        phoneNumber: orderInfo.phone,
+      })
+    // }
+  }
+
   return (
     <View className='order-detail'>
       {/* 头部信息 */}
@@ -194,15 +223,11 @@ function OrderDetail() {
           </View>
           {orderInfo?.phone && (
             <View className='copy-item'>
-              <Text>用户手机号：{orderInfo?.phone}</Text>
+              <Text>用户手机号：{encryptPhone(orderInfo?.phone)}</Text>
               <Phone
                 size={18}
                 className='copy-icon'
-                onClick={() => {
-                  Taro.makePhoneCall({
-                    phoneNumber: orderInfo.phone,
-                  })
-                }}
+                onClick={handleMakeCall}
               />
             </View>
           )}
@@ -262,6 +287,13 @@ function OrderDetail() {
         visible={showFollow}
         onClose={() => setShowFollow(false)}
         onSubmit={handleFollowSubmit}
+      />
+
+      <CallConfirmPopup
+        visible={showCallConfirm}
+        onClose={() => setShowCallConfirm(false)}
+        callerPhone={userInfo?.username || ''}
+        calleePhone={orderInfo?.phone || ''}
       />
     </View>
   )

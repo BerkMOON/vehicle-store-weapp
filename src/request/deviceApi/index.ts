@@ -7,8 +7,9 @@ import {
   MileageReminderRequest,
   MileageReminderResponse,
   StatResponse,
+  UpdateDeviceMileageRequest,
 } from './typings.d'
-import { getRequest } from ".."
+import { getRequest, postRequest } from ".."
 
 const prefix = TARO_APP_API_BASE_URL + '/api/business/device'
 
@@ -57,4 +58,14 @@ export const DeviceAPI = {
     url: `${prefix}/mileage/list`,
     params
   }),
+
+  /**
+   * 店端按 SN 更新设备确切里程（km）
+   * POST /api/business/device/mileage/update
+   */
+  updateMileage: (params: UpdateDeviceMileageRequest) =>
+    postRequest<ResponseInfoType<null>>({
+      url: `${prefix}/mileage/update`,
+      params,
+    }),
 }

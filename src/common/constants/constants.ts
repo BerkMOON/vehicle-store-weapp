@@ -1,5 +1,3 @@
-import { CouponBatchStatus } from "@/request/couponApi/typings.d"
-
 export const SuccessCode = 200
 export const WxMapApiKey = 'CPSBZ-IKTWZ-VQYX5-7Z62Q-5FZ45-OBFFG'
 export const GdMapApiKey = '95883d933e2f60323c0fa399ad4f6202'
@@ -9,7 +7,9 @@ export enum Role {
   SupportDirector = 'support_director',
   Admin = 'admin',
   Finance = 'finance',
-  SupportManager = 'customer_service_manager'
+  SupportManager = 'customer_service_manager',
+  SalesDirector = 'sales_director',
+  MaintenanceEngineer = 'device_engineer',
 }
 
 export const ROLES_INFO = {
@@ -18,6 +18,8 @@ export const ROLES_INFO = {
   [Role.SupportManager]: '客服经理',
   [Role.Admin]: '店长',
   [Role.Finance]: '财务',
+  [Role.SalesDirector]: '销售总监',
+  [Role.MaintenanceEngineer]: '设备工程师',
 }
 
 export enum CouponType {
@@ -33,13 +35,6 @@ export const COUPON_TYPES = [
   { label: '续保券', value: CouponType.Insurance },
   { label: '实物券', value: CouponType.Physical },
 ]
-
-
-export const CouponStatusMap = {
-  [CouponBatchStatus.AUDITING]: '待审核',
-  [CouponBatchStatus.AUDITED]: '审核通过',
-  [CouponBatchStatus.REJECTED]: '审核拒绝'
-}
 
 export const LossNameMap = [{
   key: 'sn',

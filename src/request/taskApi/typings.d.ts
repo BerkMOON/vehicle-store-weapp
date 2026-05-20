@@ -5,6 +5,9 @@ export interface ListRequest {
   offset?: number
   limit?: number
   status?: string
+  /** 按车架号筛选（需后端支持） */
+  vin?: string
+  sn?: string
 }
 
 export interface TaskInfo {

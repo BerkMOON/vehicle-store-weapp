@@ -1,18 +1,48 @@
 .index-container {
   height: 100vh;
   background: #f5f5f5;
-  --header-height: 0px;
+  --header-height: 60px;
+
+  .filter-header {
+    height: 60px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 101;
+    background: #fff;
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .filter-info {
+      flex: 1;
+      
+      .filter-text {
+        font-size: 12px;
+        color: #666;
+      }
+    }
+
+    .filter-buttons {
+      display: flex;
+      align-items: center;
+    }
+  }
 
   .fixed-tabs {
     position: fixed;
-    top: 0;
+    top: 60px; // 为筛选头部留出空间
     left: 0;
     right: 0;
     z-index: 100;
     background: #fff;
 
     .nut-tabs-content {
-      height: calc(100vh - 94px - constant(safe-area-inset-bottom)); // 减去tabs头部(44px)和底部tabbar(50px)的高度,
+      height: calc(100vh - 154px - constant(safe-area-inset-bottom)); // 减去筛选头部(60px)、tabs头部(44px)和底部tabbar(50px)的高度,
 
       .nut-tabpane {
         padding: 0 20px;

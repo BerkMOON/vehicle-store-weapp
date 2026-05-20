@@ -97,3 +97,9 @@ export interface MileageReminderInfo {
 export interface MileageReminderResponse extends BaseListInfo {
   item_list: MileageReminderInfo[];
 }
+
+/** POST /api/business/device/mileage/update */
+export interface UpdateDeviceMileageRequest {
+  sn: string
+  mileage: number
+}

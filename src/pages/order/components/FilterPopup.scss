@@ -1,0 +1,37 @@
+.filter-popup {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .popup-header {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+
+  .popup-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+
+    .nut-form-item {
+      margin-bottom: 16px;
+    }
+  }
+
+  .popup-footer {
+    padding: 16px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #eee;
+
+    .nut-button {
+      flex: 1;
+    }
+  }
+}

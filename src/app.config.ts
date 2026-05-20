@@ -14,7 +14,8 @@ export default defineAppConfig({
     'pages/mileage-reminder/index',
     'pages/user-list/index',
     'pages/device-stat/index',
-    'pages/lost-reminder/index'
+    'pages/lost-reminder/index',
+    'pages/factory-test/index'
   ],
   subPackages: [
     {
@@ -35,10 +36,10 @@ export default defineAppConfig({
         pagePath: 'pages/user-list/index',
         text: '员工列表'
       },
-    //   {
-    //     pagePath: 'pages/coupon-apportion/index',
-    //     text: '优惠券发放'
-    //   },
+      {
+        pagePath: 'pages/factory-test/index',
+        text: '入场检测'
+      },
       {
         pagePath: 'pages/mine/index',
         text: '我的',
@@ -47,10 +48,6 @@ export default defineAppConfig({
         pagePath: 'pages/device-stat/index',
         text: '设备统计'
       },
-    //   {
-    //     pagePath: 'pages/finance/index',
-    //     text: '优惠券结算'
-    //   },
       {
         pagePath: 'pages/lost-reminder/index',
         text: '流失提醒'
@@ -73,6 +70,12 @@ export default defineAppConfig({
     },
     "scope.userLocation": {
       desc: "你的位置信息将用于小程序定位"
-    }
+    },
+    "scope.writePhotosAlbum": {
+      desc: "保存文件到相册"
+    },
+    "scope.camera": {
+      desc: "用于拍照识别文字"
+    },
   },
 })

@@ -1,14 +1,16 @@
 import { Text, View } from '@tarojs/components'
-import { BackTop, Button } from '@nutui/nutui-react-taro'
+import { Button, Form } from '@nutui/nutui-react-taro'
 import Taro, { useDidShow } from '@tarojs/taro'
 import './index.scss'
 import GeneralPage from '@/components/GeneralPage'
 import ScrollableTabList from '@/components/ScrollableTabList'
 import { TaskAPI, TaskStatus, TaskType } from '@/request/taskApi'
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { TaskInfo } from '@/request/taskApi/typings'
 import FollowPopup from './components/FollowPopup'
+import FilterPopup from './components/FilterPopup'
 import { SuccessCode } from '@/common/constants/constants'
+import { Filter } from '@nutui/icons-react-taro'
 
 const tabs = [
   { title: '待认领', value: TaskStatus.Pending },
@@ -22,8 +24,12 @@ const tabs = [
 function Index() {
   const [activeTab, setActiveTab] = useState<string>(TaskStatus.Pending)
   const scrollableTabRef = useRef<any>(null)
+  const [showFilter, setShowFilter] = useState(false)
+  const [form] = Form.useForm()
 
-  const fetchData = async ({ status, page }: { status: string; page: number }) => {
+  const dateRange = Form.useWatch('date_range', form)
+
+  const fetchData = useCallback(async ({ status, page }: { status: string; page: number }) => {
     const params: any = {
       offset: (page - 1) * 10,
       limit: 10
@@ -33,9 +39,19 @@ function Index() {
       params.status = status
     }
 
+    // 直接从表单获取时间筛选参数
+    const dateRange = form.getFieldValue('date_range')
+    if (dateRange && dateRange.length >= 2) {
+      params.start_time = dateRange[0] + ' 00:00:00'
+      params.end_time = dateRange[1] + ' 23:59:59'
+    }
+
+    console.log('fetchData params:', params)
+    console.log('dateRange:', dateRange)
+
     const res = await TaskAPI.List(params)
     return res?.data?.task_list || []
-  }
+  }, [form])
 
   const handleViewDetail = (id: string) => {
     Taro.navigateTo({
@@ -107,6 +123,19 @@ function Index() {
         icon: 'error'
       })
     }
+  }
+
+  const handleFilterConfirm = () => {
+    // 直接刷新列表数据，fetchData 会从表单获取筛选条件
+    scrollableTabRef.current?.refresh()
+  }
+
+  const handleFilterReset = () => {
+    form.setFieldsValue({
+      date_range: []
+    })
+    // 刷新列表数据
+    scrollableTabRef.current?.refresh()
   }
 
   useDidShow(() => {
@@ -189,6 +218,39 @@ function Index() {
   return (
     <GeneralPage>
       <View className='index-container'>
+        <View className='filter-header'>
+          <View className='filter-info'>
+            {(() => {
+              return dateRange && dateRange.length >= 2 ? (
+                <Text className='filter-text'>
+                  已筛选: {dateRange[0]} 至 {dateRange[1]}
+                </Text>
+              ) : null
+            })()}
+          </View>
+          <View className='filter-buttons'>
+            {(() => {
+              return dateRange && dateRange.length >= 2 ? (
+                <Button 
+                  size='small' 
+                  fill='outline' 
+                  onClick={handleFilterReset}
+                  style={{ marginRight: '8px' }}
+                >
+                  重置
+                </Button>
+              ) : null
+            })()}
+            <Button 
+              size='small' 
+              fill='outline' 
+              icon={<Filter size={16} />}
+              onClick={() => setShowFilter(true)}
+            >
+              筛选
+            </Button>
+          </View>
+        </View>
         <ScrollableTabList
           ref={scrollableTabRef}
           tabs={tabs}
@@ -204,6 +266,12 @@ function Index() {
           visible={showFollow}
           onClose={() => setShowFollow(false)}
           onSubmit={handleFollowSubmit}
+        />
+        <FilterPopup
+          visible={showFilter}
+          onClose={() => setShowFilter(false)}
+          onConfirm={handleFilterConfirm}
+          form={form}
         />
       </View>
     </GeneralPage>

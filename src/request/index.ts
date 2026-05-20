@@ -56,15 +56,19 @@ export const postRequest = async <T>(config: any): Promise<T | null> => {
   const { url, params } = config
   try {
     const cookie = Taro.getStorageSync('cookies')
+    const headers: Record<string, string> = {
+      cookie: cookie || '',
+      'X-Company-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.company_id,
+      'X-Store-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.store_id,
+    }
+    if (params !== undefined && params !== null) {
+      headers['Content-Type'] = 'application/json; charset=utf-8'
+    }
     const res = await Taro.request({
       url,
       method: 'POST',
       data: params,
-      header: {
-        cookie: cookie || '',
-        'X-Company-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.company_id,
-        'X-Store-Id': Taro.getStorageSync('CURRENT_ROLE_INFO')?.store_id,
-      }
+      header: headers,
     })
 
     // 处理 401 状态

@@ -1,0 +1,465 @@
+.entry-check-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 16px;
+  padding-bottom: calc(48px + env(safe-area-inset-bottom));
+
+  .section {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+
+  .warn {
+    font-size: 13px;
+    color: #d48806;
+    background: #fffbe6;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .error {
+    color: #cf1322;
+    background: #fff2f0;
+  }
+
+  .success {
+    color: #389e0d;
+    background: #f6ffed;
+  }
+
+  .vin-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+
+    .nut-input {
+      flex: 1;
+    }
+  }
+
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .field {
+    margin-bottom: 0;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+  }
+
+  .device-card {
+    .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        color: #888;
+      }
+
+      .value {
+        color: #333;
+        max-width: 65%;
+        text-align: right;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .version-tip {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .firmware-section {
+    .section-title {
+      margin-bottom: 14px;
+    }
+  }
+
+  .firmware-loading {
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #8c8c8c;
+  }
+
+  .firmware-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .fw-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #fafbff 0%, #f3f5ff 100%);
+    border-radius: 10px;
+    border: 1px solid #e8ebf5;
+  }
+
+  .fw-status-label {
+    font-size: 14px;
+    color: #595959;
+    font-weight: 500;
+  }
+
+  .fw-status-badge {
+    font-size: 15px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fff;
+  }
+
+  .fw-latest-yes {
+    color: #237804;
+    border: 1px solid #b7eb8f;
+  }
+
+  .fw-latest-no {
+    color: #cf1322;
+    border: 1px solid #ffccc7;
+  }
+
+  .fw-latest-unknown {
+    color: #8c8c8c;
+    border: 1px solid #e8e8e8;
+  }
+
+  .fw-modules {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .fw-module {
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    border: 1px solid #eceef2;
+    background: #fff;
+  }
+
+  .fw-module--firmware {
+    border-left: 4px solid #597ef7;
+    box-shadow: 0 2px 8px rgba(89, 126, 247, 0.06);
+  }
+
+  .fw-module--algorithm {
+    border-left: 4px solid #36cfc9;
+    box-shadow: 0 2px 8px rgba(54, 207, 201, 0.06);
+  }
+
+  .fw-module-title {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #262626;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .fw-module--firmware .fw-module-title {
+    color: #2f54eb;
+  }
+
+  .fw-module--algorithm .fw-module-title {
+    color: #08979c;
+  }
+
+  .fw-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .fw-pair-line {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+  }
+
+  .fw-pair-k {
+    font-size: 12px;
+    color: #8c8c8c;
+    line-height: 1.3;
+  }
+
+  .fw-pair-v {
+    font-size: 14px;
+    font-weight: 500;
+    color: #262626;
+    line-height: 1.45;
+    word-break: break-all;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  .firmware-highlight {
+    display: flex;
+    gap: 10px;
+  }
+
+  .fw-card {
+    flex: 1;
+    min-width: 0;
+    background: linear-gradient(145deg, #f8f9ff 0%, #f0f2ff 100%);
+    border: 1px solid #e8eafc;
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+
+  .fw-card-label {
+    display: block;
+    font-size: 12px;
+    color: #7c7db8;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .fw-card-value {
+    display: block;
+    font-size: 17px;
+    font-weight: 600;
+    color: #2f2f5c;
+    letter-spacing: 0.02em;
+    word-break: break-all;
+    line-height: 1.35;
+  }
+
+  .firmware-meta {
+    background: #f6f7f9;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #eceef2;
+  }
+
+  .firmware-meta-block {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #dde0e6;
+  }
+
+  .firmware-meta .meta-label {
+    display: block;
+    font-size: 12px;
+    color: #8c8c8c;
+    margin-bottom: 6px;
+  }
+
+  .meta-mono {
+    display: block;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #434343;
+    word-break: break-all;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    background: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e8eaed;
+  }
+
+  .firmware-meta-times {
+    display: flex;
+    gap: 12px;
+  }
+
+  .meta-time-item {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .meta-time {
+    display: block;
+    font-size: 12px;
+    color: #595959;
+    line-height: 1.45;
+    word-break: break-all;
+  }
+
+  .mileage-section {
+    .mileage-current-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      background: #fafafa;
+      border-radius: 10px;
+      border: 1px solid #f0f0f0;
+    }
+
+    .mileage-current-label {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .mileage-current-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: #262626;
+      max-width: 58%;
+      text-align: right;
+      word-break: break-all;
+    }
+  }
+
+  .invalid-device-section {
+    .invalid-device-result {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+
+      &.is-invalid {
+        background: #fff2f0;
+        border: 1px solid #ffccc7;
+      }
+
+      &.is-valid {
+        background: #f6ffed;
+        border: 1px solid #b7eb8f;
+      }
+    }
+
+    .invalid-device-result-title {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .invalid-device-reason {
+      display: block;
+      color: #595959;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .invalid-device-rule {
+      display: block;
+      font-size: 12px;
+      color: #8c8c8c;
+    }
+  }
+
+  .task-item {
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+
+    .task-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .task-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+
+
+.collision-popup {
+  padding: 16px 16px 32px;
+  max-height: 70vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .popup-title {
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .field {
+    margin-bottom: 14px;
+  }
+
+  .field-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+  }
+
+  .time-picker-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #f7f8fa;
+    border: 1px solid #eee;
+  }
+
+  .time-picker-value {
+    font-size: 15px;
+    color: #333;
+  }
+
+  .time-picker-placeholder {
+    font-size: 15px;
+    color: #999;
+  }
+
+  .photo-preview {
+    margin-top: 10px;
+    width: 100%;
+    max-height: 180px;
+    border-radius: 8px;
+    background: #f5f5f5;
+  }
+}
