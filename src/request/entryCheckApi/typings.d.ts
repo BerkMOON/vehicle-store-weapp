@@ -69,6 +69,28 @@ export interface DeviceOfflineVersionSummary {
   latest_alg_version: string
 }
 
+/**
+ * 当日车架号留痕
+ * POST /api/business/entry-check/inspection/record
+ */
+export interface RecordEntryInspectionVinRequest {
+  vin: string
+}
+
+/** @deprecated 使用 RecordEntryInspectionVinRequest */
+export type RecordInspectionRequest = RecordEntryInspectionVinRequest
+
+/** 管理端 GET /api/admin/device/entry-inspection-log/list */
+export interface EntryInspectionLogListItem {
+  id: number
+  company_id: number
+  store_id: number
+  business_user_id: number
+  vin: string
+  ctime: string
+  mtime: string
+}
+
 /** 设备固件版本信息（与店端 GET /api/business/device/getDeviceVersion 一致） */
 export interface EntryVersionInfo {
   sn: string

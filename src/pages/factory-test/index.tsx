@@ -10,137 +10,121 @@ import { TaskInfo } from '@/request/taskApi/typings'
 import { EntryCheckAPI } from '@/request/entryCheckApi'
 import { DeviceOfflineVersionSummary } from '@/request/entryCheckApi/typings.d'
 import { SuccessCode } from '@/common/constants/constants'
-import { normalizeVin, isValidVin } from './utils'
-import { isBoundDevice, pickPrimaryDevice } from './deviceUtils'
-import { VinQuerySection } from './components/VinQuerySection'
-import { QueryEmptySection } from './components/QueryEmptySection'
-import { UnboundNoticeBanner } from './components/UnboundNoticeBanner'
-import { CurrentDeviceCard } from './components/CurrentDeviceCard'
-import { FirmwareSection } from './components/FirmwareSection'
-import { InvalidDeviceQuerySection } from './components/InvalidDeviceQuerySection'
-import { MileageSection } from './components/MileageSection'
-import { TaskListSection } from './components/TaskListSection'
-import { CollisionEntrySection } from './components/CollisionEntrySection'
+import { normalizeVin } from './utils'
+import { hasVinLinkedDevice, pickPrimaryDevice } from './deviceUtils'
 import { CollisionReportPopup } from './components/CollisionReportPopup'
 import { useUserStore } from '@/store/user'
+import { WizardProgress } from './components/wizard/WizardProgress'
+import { StepVin } from './components/wizard/StepVin'
+import { StepDeviceChoice } from './components/wizard/StepDeviceChoice'
+import { StepBind } from './components/wizard/StepBind'
+import { StepRepair } from './components/wizard/StepRepair'
+import { StepMileage } from './components/wizard/StepMileage'
+import { StepAccidents } from './components/wizard/StepAccidents'
+import { StepComplete } from './components/wizard/StepComplete'
+import { WizardStepId, DevicePath } from './wizard/types'
+import { deviceNeedsRepair } from './wizard/deviceRepair'
+import { filterAccidentTasks } from './wizard/taskFilter'
+import { recordVinScan } from './wizard/inspectionLog'
+
+const INITIAL_STEP: WizardStepId = 'vin'
 
 function FactoryTest() {
   const userInfo = useUserStore((s) => s.userInfo)
-  const defaultEngineerName =
-    (userInfo?.nickname || '').trim()
+  const defaultEngineerName = (userInfo?.nickname || '').trim()
+
+  const [step, setStep] = useState<WizardStepId>(INITIAL_STEP)
   const [vinInput, setVinInput] = useState('')
   const [queryLoading, setQueryLoading] = useState(false)
-  const [queried, setQueried] = useState(false)
   const [devices, setDevices] = useState<DeviceList[]>([])
   const [tasks, setTasks] = useState<TaskInfo[]>([])
-  const [mileageInput, setMileageInput] = useState('')
-  const [mileageSubmitting, setMileageSubmitting] = useState(false)
   const [deviceSummary, setDeviceSummary] = useState<DeviceOfflineVersionSummary | null>(null)
   const [summaryLoading, setSummaryLoading] = useState(false)
+  const [devicePath, setDevicePath] = useState<DevicePath | null>(null)
+  const [bindSn, setBindSn] = useState('')
+  const [bindLoading, setBindLoading] = useState(false)
+  const [repairAcknowledged, setRepairAcknowledged] = useState(false)
+  const [mileageInput, setMileageInput] = useState('')
+  const [mileageSubmitting, setMileageSubmitting] = useState(false)
+  const [mileageDone, setMileageDone] = useState(false)
   const [collisionVisible, setCollisionVisible] = useState(false)
+  const [collisionReported, setCollisionReported] = useState(false)
+  const [noAccidentDeclared, setNoAccidentDeclared] = useState(false)
+  const [needsRepairFlag, setNeedsRepairFlag] = useState(false)
 
   const vin = useMemo(() => normalizeVin(vinInput), [vinInput])
-  const primaryDevice = useMemo(() => pickPrimaryDevice(devices), [devices])
-  const hasBound = useMemo(() => devices.some(isBoundDevice), [devices])
-
-  /** 与 REQUIREMENTS / InvalidDeviceQuerySection 一致：仅「当前」是否失效（offline 规则） */
-  const collisionCurrentInvalid = useMemo<boolean | null>(() => {
-    if (!deviceSummary) return null
-    if (!deviceSummary.in_company_store) return null
-    return !!(deviceSummary.in_company_store && deviceSummary.offline_over_n_days)
-  }, [deviceSummary])
-
-  const fetchTasks = useCallback(async (vin: string) => {
-    const res = await TaskAPI.List({
-      offset: 0,
-      limit: 50,
-      status: TaskStatus.All,
-      vin, 
-    })
-    if (res?.response_status?.code === SuccessCode && res.data?.task_list) {
-      setTasks(res.data.task_list)
-    }
-  }, [])
+  const primaryDevice = useMemo(() => pickPrimaryDevice(devices, vin), [devices, vin])
+  const accidentTasks = useMemo(() => filterAccidentTasks(tasks), [tasks])
 
   const loadDeviceSummary = useCallback(async (sn: string) => {
     setSummaryLoading(true)
     setDeviceSummary(null)
     try {
-      const res = await EntryCheckAPI.getOfflineVersionSummary({
-        sn,
-        before_days: 10,
-      })
+      const res = await EntryCheckAPI.getOfflineVersionSummary({ sn, before_days: 10 })
       if (res?.response_status?.code === SuccessCode && res.data) {
         setDeviceSummary(res.data)
-      } else if (res?.response_status?.msg) {
-        Taro.showToast({ title: res.response_status.msg, icon: 'none' })
+        return res.data
       }
     } finally {
       setSummaryLoading(false)
     }
+    return null
   }, [])
 
-  const handleQueryDevice = async () => {
-    // if (!isValidVin(vin)) {
-    //   Taro.showToast({
-    //     title: '请输入正确17位车架号',
-    //     icon: 'none',
-    //   })
-    //   return
-    // }
-    setQueryLoading(true)
-    setQueried(true)
+  const fetchTasks = useCallback(async (v: string) => {
+    const res = await TaskAPI.List({
+      offset: 0,
+      limit: 50,
+      status: TaskStatus.All,
+      vin: v,
+    })
+    if (res?.response_status?.code === SuccessCode && res.data?.task_list) {
+      setTasks(res.data.task_list)
+    } else {
+      setTasks([])
+    }
+  }, [])
+
+  const resetWizard = useCallback(() => {
+    setStep(INITIAL_STEP)
+    setVinInput('')
     setDevices([])
     setTasks([])
     setDeviceSummary(null)
+    setDevicePath(null)
+    setBindSn('')
+    setRepairAcknowledged(false)
     setMileageInput('')
-    try {
-      const res = await DeviceAPI.list({
-        page: 1,
-        limit: 20,
-        vin,
-      })
-      if (res?.response_status?.code === SuccessCode) {
-        const list = res.data?.device_list || []
-        setDevices(list)
-        const primary = pickPrimaryDevice(list)
-        if (primary?.sn) {
-          await loadDeviceSummary(primary.sn)
-          await fetchTasks(vin)
-        }
-      } else {
-        Taro.showToast({
-          title: res?.response_status?.msg || '查询失败',
-          icon: 'none',
-        })
-      }
-    } catch (e) {
-      console.error(e)
-      Taro.showToast({ title: '查询失败', icon: 'none' })
-    } finally {
-      setQueryLoading(false)
-    }
-  }
-  // 处理图像识别
+    setMileageDone(false)
+    setCollisionReported(false)
+    setNoAccidentDeclared(false)
+    setNeedsRepairFlag(false)
+    setCollisionVisible(false)
+  }, [])
+
+  const goRepairStep = useCallback(
+    async (sn: string, path: DevicePath) => {
+      setDevicePath(path)
+      setStep('repair')
+      setSummaryLoading(true)
+      const summary = await loadDeviceSummary(sn)
+      setNeedsRepairFlag(deviceNeedsRepair(summary))
+      setSummaryLoading(false)
+    },
+    [loadDeviceSummary],
+  )
+
   const handleOCR = async () => {
     try {
-      // 先让用户选择识别类型
       const { tapIndex } = await Taro.showActionSheet({
-        itemList: ['识别行驶证', '识别其他']
+        itemList: ['识别行驶证', '识别其他'],
       })
-
-      // 选择图片
       const { tempFilePaths } = await Taro.chooseImage({
         count: 1,
         sizeType: ['compressed'],
-        sourceType: ['camera', 'album']
+        sourceType: ['camera', 'album'],
       })
-
-      Taro.showLoading({
-        title: '识别中...',
-      })
-
-      // 调用OCR识别
+      Taro.showLoading({ title: '识别中...' })
       //@ts-ignore
       const result = await Taro.serviceMarket.invokeService({
         service: 'wx79ac3de8be320b71',
@@ -152,75 +136,135 @@ function FactoryTest() {
             filePath: tempFilePaths[0],
           }),
           data_type: 3,
-          ocr_type: tapIndex === 0 ? 3 : 8  // 根据选择设置不同的识别类型
-        }
+          ocr_type: tapIndex === 0 ? 3 : 8,
+        },
       })
-
       let vinNumber = ''
       if (tapIndex === 0) {
-        // 驾驶证识别结果处理
         vinNumber = result?.data?.driving_res?.vin?.text
       } else {
-        // 车架号铭牌识别结果处理
         const items = result?.data?.ocr_comm_res?.items || []
-        const vinItem = items.find(item => item.text.startsWith('L'))
+        const vinItem = items.find((item: { text: string }) => item.text.startsWith('L'))
         vinNumber = vinItem?.text
       }
-
-      if (vinNumber) {
-        console.log('识别结果：', vinNumber)
-        setVinInput(vinNumber)
-        Taro.hideLoading()
-      } else {
-        Taro.hideLoading()
-        Taro.showToast({
-          title: '未识别到有效信息',
-          icon: 'none'
-        })
-      }
-    } catch (error) {
-      console.error('识别失败error.message：', error.message)
       Taro.hideLoading()
-      Taro.showToast({
-        title: '识别失败',
-        icon: 'error'
-      })
+      if (vinNumber) {
+        setVinInput(vinNumber)
+      } else {
+        Taro.showToast({ title: '未识别到有效信息', icon: 'none' })
+      }
+    } catch {
+      Taro.hideLoading()
     }
   }
 
-  const handleSubmitMileage = async () => {
-    if (!primaryDevice) {
-      Taro.showToast({ title: '请先完成设备查询', icon: 'none' })
+  const handleVinConfirm = async () => {
+    const v = normalizeVin(vinInput)
+    if (!v) {
+      Taro.showToast({ title: '请输入车架号', icon: 'none' })
       return
     }
+    setQueryLoading(true)
+    setDevices([])
+    setTasks([])
+    setDeviceSummary(null)
+    try {
+      await recordVinScan(v)
+      const res = await DeviceAPI.list({ page: 1, limit: 20, vin: v })
+      if (res?.response_status?.code !== SuccessCode) {
+        Taro.showToast({ title: res?.response_status?.msg || '查询失败', icon: 'none' })
+        return
+      }
+      const list = res.data?.device_list || []
+      setDevices(list)
+      await fetchTasks(v)
+      setStep('device_choice')
+    } catch (e) {
+      console.error(e)
+      Taro.showToast({ title: '查询失败', icon: 'none' })
+    } finally {
+      setQueryLoading(false)
+    }
+  }
+
+  const handleNoDevice = () => {
+    setDevicePath('no_device')
+    setNeedsRepairFlag(false)
+    setRepairAcknowledged(true)
+    setMileageDone(false)
+    setStep('complete')
+  }
+
+  const handleNeedBind = () => {
+    setBindSn('')
+    setStep('bind')
+  }
+
+  const handleAlreadyBound = async () => {
+    if (!hasVinLinkedDevice(devices, vin)) {
+      Taro.showToast({ title: '请先完成车架号与设备绑定', icon: 'none' })
+      return
+    }
+    const primary = pickPrimaryDevice(devices, vin)
+    if (!primary?.sn) {
+      Taro.showToast({ title: '无可用设备', icon: 'none' })
+      return
+    }
+    await goRepairStep(primary.sn, 'bound')
+  }
+
+  const handleBindSubmit = async () => {
+    const sn = bindSn.trim()
+    if (!sn) {
+      Taro.showToast({ title: '请输入 SN', icon: 'none' })
+      return
+    }
+    setBindLoading(true)
+    try {
+      const res = await EntryCheckAPI.bindDevice({ sn, vin })
+      if (res?.response_status?.code !== SuccessCode) {
+        Taro.showToast({ title: res?.response_status?.msg || '绑定失败', icon: 'none' })
+        return
+      }
+      Taro.showToast({ title: '绑定成功', icon: 'success' })
+      const listRes = await DeviceAPI.list({ page: 1, limit: 20, vin })
+      const list = listRes?.data?.device_list || []
+      setDevices(list)
+      const primary = pickPrimaryDevice(list, vin)
+      if (primary?.sn) {
+        await goRepairStep(primary.sn, 'bound_after_bind')
+      }
+    } catch (e) {
+      console.error(e)
+      Taro.showToast({ title: '绑定失败', icon: 'none' })
+    } finally {
+      setBindLoading(false)
+    }
+  }
+
+  const handleRepairContinue = () => {
+    setRepairAcknowledged(true)
+    setStep('mileage')
+  }
+
+  const handleMileageSubmit = async () => {
     const km = Number(mileageInput)
     if (!mileageInput.trim() || Number.isNaN(km) || km < 0) {
-      Taro.showToast({ title: '请输入有效里程数', icon: 'none' })
+      Taro.showToast({ title: '请输入有效里程', icon: 'none' })
       return
     }
     setMileageSubmitting(true)
     try {
-      const res = await DeviceAPI.updateMileage({
-        sn: primaryDevice.sn,
-        mileage: km,
-      })
-      if (res?.response_status?.code === SuccessCode) {
-        Taro.showToast({ title: '里程已更新', icon: 'success' })
-        setMileageInput('')
-        const listRes = await DeviceAPI.list({
-          page: 1,
-          limit: 20,
-          vin,
-        })
-        if (listRes?.response_status?.code === SuccessCode) {
-          setDevices(listRes.data?.device_list || [])
+      if (devicePath !== 'no_device' && primaryDevice?.sn) {
+        const res = await DeviceAPI.updateMileage({ sn: primaryDevice.sn, mileage: km })
+        if (res?.response_status?.code !== SuccessCode) {
+          Taro.showToast({ title: res?.response_status?.msg || '更新失败', icon: 'none' })
+          return
         }
-      } else {
-        Taro.showToast({
-          title: res?.response_status?.msg || '更新失败',
-          icon: 'none',
-        })
       }
+      setMileageDone(true)
+      setStep('accidents')
+      Taro.showToast({ title: '里程已记录', icon: 'success' })
     } catch (e) {
       console.error(e)
       Taro.showToast({ title: '提交失败', icon: 'none' })
@@ -229,77 +273,142 @@ function FactoryTest() {
     }
   }
 
+  const finishFlow = (opts: {
+    collisionReported?: boolean
+    noAccidentDeclared?: boolean
+  }) => {
+    if (opts.collisionReported) setCollisionReported(true)
+    if (opts.noAccidentDeclared) setNoAccidentDeclared(true)
+    setStep('complete')
+  }
+
+  const handleCollisionClose = (reported: boolean) => {
+    setCollisionVisible(false)
+    if (reported) {
+      setCollisionReported(true)
+      finishFlow({ collisionReported: true })
+    }
+  }
+
+  const handleNoAccidentComplete = () => {
+    setNoAccidentDeclared(true)
+    finishFlow({ noAccidentDeclared: true })
+  }
+
   const openCollision = () => {
-    if (!primaryDevice) {
-      Taro.showToast({ title: '请先完成设备查询', icon: 'none' })
+    if (devicePath !== 'no_device' && !primaryDevice?.sn) {
+      Taro.showToast({ title: '无设备信息，可直接完成检测', icon: 'none' })
       return
     }
     setCollisionVisible(true)
   }
 
   const goTaskDetail = (clueId: string) => {
-    Taro.navigateTo({
-      url: `/pages/order-detail/index?clueId=${encodeURIComponent(clueId)}`,
-    })
+    Taro.navigateTo({ url: `/pages/order-detail/index?clueId=${encodeURIComponent(clueId)}` })
   }
 
-  const handleResetVin = () => {
-    setVinInput('')
-    setDevices([])
-    setTasks([])
-    setDeviceSummary(null)
-    setMileageInput('')
-    setQueried(false)
-  }
+  const completeSummaryLines = useMemo(() => {
+    const lines: string[] = []
+    if (devicePath === 'no_device') {
+      lines.push('· 无易达安设备，已直接完成入场检测')
+      return lines
+    }
+    if (devicePath === 'bound_after_bind') lines.push('· 已完成补绑定')
+    else lines.push('· 设备已绑定')
+    lines.push(needsRepairFlag ? '· 设备曾需修复（已确认）' : '· 设备检测正常')
+    lines.push(mileageDone ? '· 里程已更新' : '· 里程未更新')
+    if (collisionReported) lines.push('· 已上报未检出事故')
+    else if (noAccidentDeclared) lines.push('· 已确认无需事故上报')
+    return lines
+  }, [devicePath, needsRepairFlag, mileageDone, collisionReported, noAccidentDeclared])
+
+  const progressStep: WizardStepId =
+    step === 'bind' ? 'device_choice' : step
 
   return (
     <GeneralPage>
-      <View className='entry-check-page'>
-        <VinQuerySection
-          vinInput={vinInput}
-          onVinChange={setVinInput}
-          queryLoading={queryLoading}
-          onQuery={handleQueryDevice}
-          onOcr={handleOCR}
-        />
-
-        {queried && devices.length === 0 && !queryLoading && isValidVin(vin) && (
-          <QueryEmptySection onResetVin={handleResetVin} />
+      <View className='entry-check-page entry-check-wizard'>
+        {step !== 'complete' && (
+          <WizardProgress current={progressStep} devicePath={devicePath} />
         )}
 
-        {devices.length > 0 && primaryDevice && (
-          <>
-            {!hasBound && <UnboundNoticeBanner />}
-            <CurrentDeviceCard device={primaryDevice} />
-            <FirmwareSection summaryLoading={summaryLoading} summary={deviceSummary} />
-            <InvalidDeviceQuerySection
-              key={`invalid-${primaryDevice.sn}`}
-              sn={primaryDevice.sn}
-              summary={deviceSummary}
-              summaryLoading={summaryLoading}
-            />
-            <MileageSection
-              currentMileageKm={primaryDevice.mileage}
-              mileageInput={mileageInput}
-              onMileageChange={setMileageInput}
-              mileageSubmitting={mileageSubmitting}
-              onSubmit={handleSubmitMileage}
-            />
-            <CollisionEntrySection onOpenReport={openCollision} />
-            <TaskListSection tasks={tasks} onGoDetail={goTaskDetail} />
-          </>
+        {step === 'vin' && (
+          <StepVin
+            vinInput={vinInput}
+            onVinChange={setVinInput}
+            loading={queryLoading}
+            onOcr={handleOCR}
+            onConfirm={handleVinConfirm}
+          />
+        )}
+
+        {step === 'device_choice' && (
+          <StepDeviceChoice
+            vin={vin}
+            devices={devices}
+            onNoDevice={handleNoDevice}
+            onNeedBind={handleNeedBind}
+            onAlreadyBound={handleAlreadyBound}
+          />
+        )}
+
+        {step === 'bind' && (
+          <StepBind
+            vin={vin}
+            bindSn={bindSn}
+            onBindSnChange={setBindSn}
+            loading={bindLoading}
+            onSubmit={handleBindSubmit}
+            onBack={() => setStep('device_choice')}
+          />
+        )}
+
+        {step === 'repair' && (
+          <StepRepair
+            needsRepair={needsRepairFlag}
+            loading={summaryLoading}
+            onContinue={handleRepairContinue}
+            onBack={() => setStep('device_choice')}
+          />
+        )}
+
+        {step === 'mileage' && (
+          <StepMileage
+            vin={vin}
+            mileageInput={mileageInput}
+            onMileageChange={setMileageInput}
+            submitting={mileageSubmitting}
+            onSubmit={handleMileageSubmit}
+            skipDeviceSteps={devicePath === 'no_device'}
+          />
+        )}
+
+        {step === 'accidents' && (
+          <StepAccidents
+            tasks={accidentTasks}
+            onGoDetail={goTaskDetail}
+            onReportCollision={openCollision}
+            onNoAccidentComplete={handleNoAccidentComplete}
+          />
+        )}
+
+        {step === 'complete' && (
+          <StepComplete
+            vin={vin}
+            summaryLines={completeSummaryLines}
+            onRestart={resetWizard}
+          />
         )}
       </View>
 
-      {/* key 勿含 vin：否则每输入一字 remount，小程序下会导致 VIN 输入框失焦 */}
       <CollisionReportPopup
-        key={primaryDevice?.sn ? `collision-${primaryDevice.sn}` : 'collision-pending'}
+        key={primaryDevice?.sn ? `collision-${primaryDevice.sn}` : 'collision-no-device'}
         visible={collisionVisible}
         vin={vin}
         sn={primaryDevice?.sn ?? ''}
         defaultEngineerName={defaultEngineerName}
-        currentInvalidDevice={collisionCurrentInvalid}
-        onClose={() => setCollisionVisible(false)}
+        currentInvalidDevice={null}
+        onClose={handleCollisionClose}
       />
     </GeneralPage>
   )

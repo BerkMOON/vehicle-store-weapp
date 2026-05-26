@@ -29,6 +29,11 @@ export const supportTabList = [
 
 export const supportDirectorTabList = [
   {
+    pagePath: '/pages/factory-test/index',
+    text: '入场检测',
+    icon: <Calculator size={18} />
+  },
+  {
     pagePath: '/pages/order/index',
     text: '工单列表',
     icon: <Agenda size={18} />

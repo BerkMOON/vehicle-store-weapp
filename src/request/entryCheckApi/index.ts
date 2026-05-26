@@ -3,6 +3,7 @@ import { getRequest, postRequest } from '..'
 import {
   EntryBindRequest,
   SubmitEntryCollisionReportRequest,
+  RecordEntryInspectionVinRequest,
   EntryInvalidCheckResponse,
   EntryInvalidDeviceQueryRequest,
   EntryMileageRequest,
@@ -78,5 +79,16 @@ export const EntryCheckAPI = {
     getRequest<ResponseInfoType<EntryVersionInfo>>({
       url: `${devicePrefix}/getDeviceVersion`,
       params: { sn: params.sn },
+    }),
+
+  /**
+   * 当日车架号留痕（步骤 1 确认车架号时调用）
+   * POST /api/business/entry-check/inspection/record
+   * 同日同门店同 VIN 覆盖，仅传 vin
+   */
+  recordVinScan: (vin: string) =>
+    postRequest<ResponseInfoType<null>>({
+      url: `${entryPrefix}/inspection/record`,
+      params: { vin } satisfies RecordEntryInspectionVinRequest,
     }),
 }

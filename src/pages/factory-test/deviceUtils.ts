@@ -1,14 +1,25 @@
 import { DeviceList } from '@/request/deviceApi/typings.d'
+import { normalizeVin } from './utils'
 
-/** 列表项是否已绑定（与店端设备列表状态文案对齐） */
-export function isBoundDevice(d: DeviceList) {
-  const n = d.status?.name ?? ''
-  if (n.includes('未绑定')) return false
-  return n.includes('绑定')
+/**
+ * 车架号是否已绑定到该设备（店端 device 表 VIN 字段）。
+ * 与 status（init/bound 等店端状态、安装上报）无关，工程师不做微信绑定。
+ */
+export function isVinLinkedToDevice(d: DeviceList, targetVin: string) {
+  const linked = normalizeVin(d.vin || '')
+  const target = normalizeVin(targetVin)
+  return !!target && !!linked && linked === target
 }
 
-export function pickPrimaryDevice(devices: DeviceList[]) {
+export function hasVinLinkedDevice(devices: DeviceList[], targetVin: string) {
+  return devices.some((d) => isVinLinkedToDevice(d, targetVin))
+}
+
+export function pickPrimaryDevice(devices: DeviceList[], targetVin?: string) {
   if (!devices.length) return null
-  const bound = devices.find(isBoundDevice)
-  return bound || devices[0]
+  if (targetVin) {
+    const linked = devices.find((d) => isVinLinkedToDevice(d, targetVin))
+    if (linked) return linked
+  }
+  return devices[0]
 }

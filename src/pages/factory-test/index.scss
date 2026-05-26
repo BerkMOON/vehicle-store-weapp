@@ -4,6 +4,158 @@
   padding: 16px;
   padding-bottom: calc(48px + env(safe-area-inset-bottom));
 
+  &.entry-check-wizard {
+    .wizard-step {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 16px;
+      margin-top: 12px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    }
+
+    .wizard-step-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .wizard-step-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .wizard-progress {
+      margin-bottom: 4px;
+    }
+
+    .wizard-progress-bar {
+      height: 6px;
+      background: #e8e8e8;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .wizard-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4e54c8, #6b72e8);
+      border-radius: 3px;
+      transition: width 0.25s ease;
+    }
+
+    .wizard-progress-text {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-top: 8px;
+    }
+
+    .wizard-choice-list {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .wizard-choice-btn {
+      height: 48px;
+    }
+
+    .repair-alert {
+      margin-top: 16px;
+      padding: 14px;
+      background: #fff7e6;
+      border-radius: 10px;
+      border: 1px solid #ffd591;
+    }
+
+    .repair-alert-title {
+      display: block;
+      font-size: 18px;
+      font-weight: 600;
+      color: #d48806;
+      margin-bottom: 6px;
+    }
+
+    .repair-alert-desc {
+      font-size: 13px;
+      color: #874d00;
+      line-height: 1.5;
+    }
+
+    .repair-tutorial {
+      margin-top: 12px;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 8px;
+    }
+
+    .repair-tutorial-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .repair-tutorial-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 200px;
+      margin-top: 8px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .repair-tutorial-preview-text {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .wizard-step--complete {
+      text-align: center;
+      padding-top: 32px;
+    }
+
+    .complete-ring {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #52c41a, #95de64);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(82, 196, 26, 0.35);
+    }
+
+    .complete-percent {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .complete-summary {
+      margin-top: 20px;
+      text-align: left;
+      padding: 12px 16px;
+      background: #f6ffed;
+      border-radius: 8px;
+    }
+
+    .complete-summary-line {
+      display: block;
+      font-size: 14px;
+      color: #389e0d;
+      line-height: 1.8;
+    }
+  }
+
   .section {
     background: #fff;
     border-radius: 10px;

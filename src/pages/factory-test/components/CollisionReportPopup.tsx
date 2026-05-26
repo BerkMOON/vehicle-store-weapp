@@ -21,7 +21,8 @@ interface CollisionReportPopupProps {
    * true = 当前判定失效；false = 当前判定非失效；null = 暂无数据或本店无该 SN 记录，提交时会再调 queryInvalidDevice。
    */
   currentInvalidDevice?: boolean | null
-  onClose: () => void
+  /** 关闭；reported=true 表示已成功上报 */
+  onClose: (reported?: boolean) => void
 }
 
 export function CollisionReportPopup({
@@ -57,9 +58,9 @@ export function CollisionReportPopup({
     if (visible) reset()
   }, [visible, reset])
 
-  const handleClose = () => {
+  const handleClose = (reported = false) => {
     reset()
-    onClose()
+    onClose(reported)
   }
 
   /** 当前是否失效：优先用页面上已拉取的 summary，否则调通用接口（不要求事故时间） */
@@ -121,7 +122,7 @@ export function CollisionReportPopup({
       })
       if (sub?.response_status?.code === SuccessCode) {
         Taro.showToast({ title: '上报成功', icon: 'success' })
-        handleClose()
+        handleClose(true)
       } else {
         Taro.showToast({
           title: sub?.response_status?.msg || '上报失败',
@@ -159,7 +160,7 @@ export function CollisionReportPopup({
     <Popup
       visible={visible}
       position='bottom'
-      onClose={handleClose}
+      onClose={() => handleClose(false)}
       style={{ minHeight: '45%' }}
     >
       <View className='collision-popup'>

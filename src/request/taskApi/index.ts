@@ -61,6 +61,10 @@ export const TaskAPI = {
 
 export enum TaskType {
   Pending = 1,
+  Processing,
+  Returned,
+  Rejected,
+  WaitingForReturn,
 }
 
 export enum TaskStatus {
