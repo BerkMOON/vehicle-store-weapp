@@ -311,6 +311,7 @@ function FactoryTest() {
     const lines: string[] = []
     if (devicePath === 'no_device') {
       lines.push('· 无易达安设备，已直接完成入场检测')
+      lines.push('· 请向车主播放易达安产品介绍视频')
       return lines
     }
     if (devicePath === 'bound_after_bind') lines.push('· 已完成补绑定')
@@ -396,6 +397,7 @@ function FactoryTest() {
           <StepComplete
             vin={vin}
             summaryLines={completeSummaryLines}
+            showProductVideo={devicePath === 'no_device'}
             onRestart={resetWizard}
           />
         )}

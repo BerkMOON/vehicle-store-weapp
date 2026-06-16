@@ -20,4 +20,5 @@ export const StaticAPI = {
 
 export {
   STATIC_FILE_TYPE_REPAIR_DEVICE_VIDEO,
+  STATIC_FILE_TYPE_INSTRUCTION_PRODUCT,
 } from './typings.d'

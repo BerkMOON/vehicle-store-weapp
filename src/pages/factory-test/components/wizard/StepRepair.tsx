@@ -1,4 +1,4 @@
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import { Button } from '@nutui/nutui-react-taro'
 import { PlayStart } from '@nutui/icons-react-taro'
 import { useEffect, useState } from 'react'
@@ -19,10 +19,12 @@ interface StepRepairProps {
 export function StepRepair({ needsRepair, loading, onContinue, onBack }: StepRepairProps) {
   const [videoLoading, setVideoLoading] = useState(false)
   const [videoUrl, setVideoUrl] = useState('')
+  const [posterUrl, setPosterUrl] = useState('')
 
   useEffect(() => {
     if (loading || !needsRepair) {
       setVideoUrl('')
+      setPosterUrl('')
       return
     }
 
@@ -41,11 +43,12 @@ export function StepRepair({ needsRepair, loading, onContinue, onBack }: StepRep
           })
           return
         }
-        const url = res.data?.item_list?.find(
-          (item) => item.file_type === STATIC_FILE_TYPE_REPAIR_DEVICE_VIDEO,
-        )?.url
-        if (url) {
-          setVideoUrl(url)
+        const item = res.data?.item_list?.find(
+          (i) => i.file_type === STATIC_FILE_TYPE_REPAIR_DEVICE_VIDEO,
+        )
+        if (item?.url) {
+          setVideoUrl(item.url)
+          setPosterUrl(item.poster_url || '')
         }
       } finally {
         if (!cancelled) {
@@ -90,8 +93,17 @@ export function StepRepair({ needsRepair, loading, onContinue, onBack }: StepRep
             {videoLoading && <Text className='hint'>教程加载中…</Text>}
             {!videoLoading && videoUrl ? (
               <View className='repair-tutorial-preview' onClick={handlePreviewVideo}>
-                <PlayStart size={40} />
-                <Text className='repair-tutorial-preview-text'>点击播放修复教程</Text>
+                {posterUrl ? (
+                  <Image
+                    className='repair-tutorial-preview-poster'
+                    src={posterUrl}
+                    mode='aspectFill'
+                  />
+                ) : null}
+                <View className='repair-tutorial-preview-overlay'>
+                  <PlayStart size={40} color='#fff' />
+                  <Text className='repair-tutorial-preview-text'>点击播放修复教程</Text>
+                </View>
               </View>
             ) : null}
             {!videoLoading && !videoUrl ? (

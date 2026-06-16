@@ -1,6 +1,65 @@
 import { Role } from "@/common/constants/constants"
+import { RoleList } from "@/request/userApi/typings"
 import Taro from "@tarojs/taro"
 import { Agenda, BellUnread, Calculator, People, Truck, User } from '@nutui/icons-react-taro'
+
+export interface TabItem {
+  pagePath: string
+  text: string
+  icon: React.ReactNode
+}
+
+/** Tab 合并时的展示顺序（「我的」固定最后） */
+const TAB_ORDER: string[] = [
+  '/pages/factory-test/index',
+  '/pages/device-stat/index',
+  '/pages/order/index',
+  '/pages/lost-reminder/index',
+  '/pages/mileage-reminder/index',
+  '/pages/user-list/index',
+  '/pages/mine/index',
+]
+
+/** 按门店去重，同一门店多个角色只保留一条用于切换 */
+export function getUniqueStores(roleList: RoleList[]): RoleList[] {
+  const map = new Map<number, RoleList>()
+  roleList.forEach((item) => {
+    if (!map.has(item.store_id)) {
+      map.set(item.store_id, item)
+    }
+  })
+  return Array.from(map.values())
+}
+
+/** 当前门店下的全部角色 */
+export function getRolesAtStore(
+  roleList: RoleList[],
+  storeId?: number | null,
+): RoleList[] {
+  if (storeId == null) return []
+  return roleList.filter((item) => item.store_id === storeId)
+}
+
+/** 合并多角色可见 Tab（按 pagePath 去重） */
+export function getTabsForRoles(roles: Role[]): TabItem[] {
+  const merged = new Map<string, TabItem>()
+  roles.forEach((role) => {
+    getTab(role).forEach((tab) => {
+      if (tab.pagePath && !merged.has(tab.pagePath)) {
+        merged.set(tab.pagePath, tab as TabItem)
+      }
+    })
+  })
+  return TAB_ORDER.filter((path) => merged.has(path)).map((path) => merged.get(path)!)
+}
+
+/** 根据当前门店上下文解析应展示的角色列表 */
+export function getActiveRoles(
+  roleList: RoleList[],
+  currentRoleInfo: RoleList | null,
+): Role[] {
+  return getRolesAtStore(roleList, currentRoleInfo?.store_id).map((item) => item.role)
+}
 
 /**
  * 手机号加密显示
@@ -147,6 +206,44 @@ export const salesManagerTabList = [
   }
 ]
 
+/** 销售安装执行人：设备统计、我的 */
+export const salesInstallExecutorTabList = [
+  {
+    pagePath: '/pages/device-stat/index',
+    text: '设备统计',
+    icon: <Calculator size={18} />
+  },
+  {
+    pagePath: '/pages/mine/index',
+    text: '我的',
+    icon: <User size={18} />
+  }
+]
+
+/** 售后安装执行人：入厂检测、工单列表、里程提醒、我的 */
+export const supportInstallExecutorTabList = [
+  {
+    pagePath: '/pages/factory-test/index',
+    text: '入场检测',
+    icon: <Calculator size={18} />
+  },
+  {
+    pagePath: '/pages/order/index',
+    text: '工单列表',
+    icon: <Agenda size={18} />
+  },
+  {
+    pagePath: '/pages/mileage-reminder/index',
+    text: '里程提醒',
+    icon: <Truck size={18} />
+  },
+  {
+    pagePath: '/pages/mine/index',
+    text: '我的',
+    icon: <User size={18} />
+  }
+]
+
 export const maintenanceEngineerTabList = [
   {
     pagePath: '/pages/factory-test/index',
@@ -160,8 +257,10 @@ export const maintenanceEngineerTabList = [
   }
 ]
 
-export const initTab = (role: Role, setTabInfo: (tab: any) => void) => {
-  const tabInfo = getTab(role)[0]
+export const initTab = (roles: Role | Role[], setTabInfo: (tab: TabItem) => void) => {
+  const roleList = Array.isArray(roles) ? roles : [roles]
+  const tabs = getTabsForRoles(roleList)
+  const tabInfo = tabs[0] || getTab(Role.Support)[0] as TabItem
   setTabInfo(tabInfo)
   handleLoginSuccess(tabInfo.pagePath)
 }
@@ -195,6 +294,10 @@ export const getTab = (role: Role) => {
       return supportManageTabList
     case Role.SalesDirector:
       return salesManagerTabList
+    case Role.SalesInstallExecutor:
+      return salesInstallExecutorTabList
+    case Role.SupportInstallExecutor:
+      return supportInstallExecutorTabList
     case Role.MaintenanceEngineer:
       return maintenanceEngineerTabList
     default:

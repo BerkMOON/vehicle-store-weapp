@@ -9,6 +9,8 @@ export enum Role {
   Finance = 'finance',
   SupportManager = 'customer_service_manager',
   SalesDirector = 'sales_director',
+  SalesInstallExecutor = 'sales_install_executor',
+  SupportInstallExecutor = 'support_install_executor',
   MaintenanceEngineer = 'device_engineer',
 }
 
@@ -19,6 +21,8 @@ export const ROLES_INFO = {
   [Role.Admin]: '店长',
   [Role.Finance]: '财务',
   [Role.SalesDirector]: '销售总监',
+  [Role.SalesInstallExecutor]: '销售安装执行人',
+  [Role.SupportInstallExecutor]: '售后安装执行人',
   [Role.MaintenanceEngineer]: '设备工程师',
 }
 
